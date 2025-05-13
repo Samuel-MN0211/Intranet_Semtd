@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Cards_homepage {
+public class Cardshomepage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

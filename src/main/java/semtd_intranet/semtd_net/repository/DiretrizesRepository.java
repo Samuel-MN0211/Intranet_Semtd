@@ -2,6 +2,7 @@ package semtd_intranet.semtd_net.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import semtd_intranet.semtd_net.model.Diretrizes;
 import semtd_intranet.semtd_net.model.Usuarios;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
-public interface DiretrizesRepository extends JpaRepository<Usuarios, Long> {
+@Repository
+public interface DiretrizesRepository extends JpaRepository<Diretrizes, Long> {
 
 }

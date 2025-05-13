@@ -2,24 +2,24 @@ package semtd_intranet.semtd_net.service;
 
 import java.util.List;
 
-import semtd_intranet.semtd_net.model.Diretrizes;
+import semtd_intranet.semtd_net.model.Cardshomepage;
 
-public class DiretrizesService implements Service<Diretrizes, Long> {
+public class CardshomepageService implements Service<Cardshomepage, Long> {
 
     @Override
-    public List<Diretrizes> findAll() {
+    public List<Cardshomepage> findAll() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 
     @Override
-    public Diretrizes findById(Long id) {
+    public Cardshomepage findById(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findById'");
     }
 
     @Override
-    public Diretrizes save(Diretrizes t) {
+    public Cardshomepage save(Cardshomepage t) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'save'");
     }

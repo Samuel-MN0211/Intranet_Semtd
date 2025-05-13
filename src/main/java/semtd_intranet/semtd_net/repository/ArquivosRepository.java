@@ -2,6 +2,7 @@ package semtd_intranet.semtd_net.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import semtd_intranet.semtd_net.model.Arquivos;
 import semtd_intranet.semtd_net.model.Usuarios;
 import java.util.Optional;
 
@@ -16,6 +17,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
-public interface ArquivosRepository extends JpaRepository<Usuarios, Long> {
-
+@Repository
+public interface ArquivosRepository extends JpaRepository<Arquivos, Long> {
 }

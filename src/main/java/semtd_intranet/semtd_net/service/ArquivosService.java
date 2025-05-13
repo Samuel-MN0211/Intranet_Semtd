@@ -1,5 +1,30 @@
 package semtd_intranet.semtd_net.service;
 
-public class ArquivosService {
+import semtd_intranet.semtd_net.model.Arquivos;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.Optional;
+
+public class ArquivosService implements Service<Arquivos, Long> {
+
+    @Override
+    public List<Arquivos> findAll() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    }
+
+    @Override
+    public Arquivos findById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
+
+    @Override
+    public Arquivos save(Arquivos t) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
 
 }

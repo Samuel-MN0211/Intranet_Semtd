@@ -2,7 +2,8 @@ package semtd_intranet.semtd_net.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import semtd_intranet.semtd_net.model.Gerencia;
+import semtd_intranet.semtd_net.model.Arquivos;
+import semtd_intranet.semtd_net.model.Cardshomepage;
 import semtd_intranet.semtd_net.model.Usuarios;
 import java.util.Optional;
 
@@ -18,6 +19,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GerenciaRepository extends JpaRepository<Gerencia, Long> {
-
+public interface CardshomepageRepository extends JpaRepository<Cardshomepage, Long> {
 }
