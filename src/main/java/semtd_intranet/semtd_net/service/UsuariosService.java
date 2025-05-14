@@ -2,9 +2,17 @@ package semtd_intranet.semtd_net.service;
 
 import java.util.List;
 
-import semtd_intranet.semtd_net.model.Usuarios;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import semtd_intranet.semtd_net.model.Usuarios;
+import semtd_intranet.semtd_net.repository.UsuariosRepository;
+
+@Component
 public class UsuariosService implements Service<Usuarios, Long> {
+
+    @Autowired
+    private UsuariosRepository usuariosRepository;
 
     @Override
     public List<Usuarios> findAll() {

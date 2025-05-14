@@ -20,4 +20,8 @@ import java.util.List;
 
 @Repository
 public interface CardshomepageRepository extends JpaRepository<Cardshomepage, Long> {
+
+    List<Cardshomepage> findByTituloContainingIgnoreCase(String titulo);
+
+    Optional<Cardshomepage> findByIdAndTituloContainingIgnoreCase(Long id, String titulo);
 }

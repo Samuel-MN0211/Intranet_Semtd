@@ -2,9 +2,17 @@ package semtd_intranet.semtd_net.service;
 
 import java.util.List;
 
-import semtd_intranet.semtd_net.model.Sistemas;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import semtd_intranet.semtd_net.model.Sistemas;
+import semtd_intranet.semtd_net.repository.SistemasRepository;
+
+@Component
 public class SistemasService implements Service<Sistemas, Long> {
+
+    @Autowired
+    private SistemasRepository sistemasRepository;
 
     @Override
     public List<Sistemas> findAll() {
