@@ -23,7 +23,17 @@ public class CardshomepageService {
         return cardshomepageRepository.findById(id);
     }
 
+    // Título não pode ser igual a outro card já existente
     public Cardshomepage save(Cardshomepage card) {
+        boolean tituloJaExiste = cardshomepageRepository
+                .findByTituloContainingIgnoreCase(card.getTitulo())
+                .stream()
+                .anyMatch(existingCard -> !existingCard.getId().equals(card.getId()));
+
+        if (tituloJaExiste) {
+            throw new IllegalArgumentException("Já existe um card com este título.");
+        }
+
         return cardshomepageRepository.save(card);
     }
 

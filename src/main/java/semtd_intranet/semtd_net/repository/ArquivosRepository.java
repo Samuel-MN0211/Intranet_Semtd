@@ -19,4 +19,9 @@ import java.util.List;
 
 @Repository
 public interface ArquivosRepository extends JpaRepository<Arquivos, Long> {
+    List<Arquivos> findAllByNomeArquivo(String nomeArquivo);
+
+    Arquivos findByNomeArquivo(String nomeArquivo);
+
+    void deleteByNomeArquivo(String nomeArquivo);
 }
