@@ -1,35 +1,46 @@
 package semtd_intranet.semtd_net.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import semtd_intranet.semtd_net.model.Cardshomepage;
 import semtd_intranet.semtd_net.repository.CardshomepageRepository;
 
-@Component
-public class CardshomepageService implements Service<Cardshomepage, Long> {
+@Service
+public class CardshomepageService {
 
     @Autowired
     private CardshomepageRepository cardshomepageRepository;
 
-    @Override
     public List<Cardshomepage> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return cardshomepageRepository.findAll();
     }
 
-    @Override
-    public Cardshomepage findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    public Optional<Cardshomepage> findById(Long id) {
+        return cardshomepageRepository.findById(id);
     }
 
-    @Override
-    public Cardshomepage save(Cardshomepage t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    public Cardshomepage save(Cardshomepage card) {
+        return cardshomepageRepository.save(card);
     }
 
+    public List<Cardshomepage> findByTituloContainingIgnoreCase(String titulo) {
+        return cardshomepageRepository.findByTituloContainingIgnoreCase(titulo);
+    }
+
+    public void deleteById(Long id) {
+        cardshomepageRepository.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
+        return cardshomepageRepository.existsById(id);
+    }
+
+    public void deleteAllByTituloContainingIgnoreCase(String titulo) {
+        List<Cardshomepage> cards = cardshomepageRepository.findByTituloContainingIgnoreCase(titulo);
+        cardshomepageRepository.deleteAll(cards);
+    }
 }
