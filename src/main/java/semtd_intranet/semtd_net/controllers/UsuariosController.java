@@ -1,3 +1,6 @@
+
+//UTILIZADO PARA AUTENTICAÇÃO HTTP SIMPLES. DESCARTAR AO IMPLEMENTAR JWT 
+
 package semtd_intranet.semtd_net.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,12 +1,17 @@
+
+//UTILIZADO PARA AUTENTICAÇÃO JWT COM FILTERCHAIN
+
 package semtd_intranet.semtd_net.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -21,33 +26,41 @@ import semtd_intranet.semtd_net.repository.UsuariosRepository;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
+    @Autowired
+    private UsuarioDetailsService userDetailsService;
+
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() { // Criptografa senhas dos usuários.
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
+        return http.csrf(csrf -> csrf.disable()) // Desativa csrf expondo o endpoint de criação de admin para que possa
+                                                 // ser acessado sem estar logado
+                // TODO: REVER ROTA DE ADMIN EXPOSTA APÓS TESTE E VALIDAÇÃO
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/basedigital/cadastraradmin", "/basedigital/cadastraradmin",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**")
-                        .permitAll()
-                        .anyRequest().authenticated())
-                .httpBasic();
-        return http.build();
+                        .requestMatchers("/auth/login", "/usuarios/cadastraradmin").permitAll() // Permite /auth/login e
+                                                                                                // /usuarios/cadastraradmin
+                                                                                                // sem autenticação
+
+                        .anyRequest().authenticated()) // Torna todas as outras rotas protegidas
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Usa JWT
+                                                                                                              // no
+                                                                                                              // lugar
+                                                                                                              // de
+                                                                                                              // sessões.
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     // BEAN PARA INICIALIZAR O AUTENTICADOR
     @Bean
-    public AuthenticationManager authenticationManager(
-            HttpSecurity http,
-            UsuarioDetailsService userDetailsService,
-            BCryptPasswordEncoder encoder) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder encoder)
+            throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(encoder)

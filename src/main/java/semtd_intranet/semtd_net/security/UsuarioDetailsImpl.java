@@ -1,3 +1,5 @@
+//UTILIZADO PARA AUTENTICAÇÃO HTTP SIMPLES. DESCARTAR AO IMPLEMENTAR JWT 
+
 package semtd_intranet.semtd_net.security;
 
 import org.springframework.security.core.GrantedAuthority;
