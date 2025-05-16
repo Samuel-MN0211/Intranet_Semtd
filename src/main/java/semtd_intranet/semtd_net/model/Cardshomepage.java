@@ -25,7 +25,7 @@ public class Cardshomepage {
     @NotNull(message = "O título não pode ser nulo")
     @NotEmpty(message = "O título não pode estar vazio")
     @Size(min = 3, max = 100, message = "O título deve ter entre 3 e 100 caracteres")
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "titulo", nullable = false, unique = true)
     private String titulo;
 
     @NotNull(message = "A descrição não pode ser nula")
