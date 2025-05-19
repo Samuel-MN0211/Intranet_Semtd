@@ -2,6 +2,8 @@ package semtd_intranet.semtd_net.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,8 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
 import lombok.Getter;
 import lombok.Setter;
+import semtd_intranet.semtd_net.enums.Cargo;
+import semtd_intranet.semtd_net.enums.Role;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -24,40 +29,42 @@ public class Usuarios implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "O nome não pode estar vazio")
-    @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres")
+    @NotEmpty
+    @Size(min = 2, max = 100)
     private String nome;
 
-    @NotEmpty(message = "A senha não pode estar vazia")
-    @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres")
+    @NotEmpty
+    @Size(min = 6)
     private String senha;
 
-    @NotEmpty(message = "O e-mail não pode estar vazio")
-    @Email(message = "E-mail inválido")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Formato de e-mail inválido")
+    @NotEmpty
+    @Email
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
     private String email;
 
-    private Boolean diretor = false;
+    @Enumerated(EnumType.STRING)
+    private Cargo cargo;
 
-    private Boolean secretario = false;
+    private String formacao;
 
-    @NotEmpty(message = "A função não pode estar vazia")
-    @Size(min = 2, max = 50, message = "A função deve ter entre 2 e 50 caracteres")
-    private String funcao;
-
-    @NotNull(message = "A gerência é obrigatória")
-    @ManyToOne
-    @JoinColumn(name = "gerencia_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "gerencia_id")
     private Gerencia gerencia;
 
     @OneToMany(mappedBy = "criadoPor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comunicados> comunicadosCriados;
 
-    // SPRING SECURITY MÉTODOS
+    @OneToOne(optional = true)
+    @JoinColumn(name = "foto_id")
+    private Arquivos fotoUsuario;
+
+    // SPRING SECURITY
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -89,5 +96,9 @@ public class Usuarios implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 
 }

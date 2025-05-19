@@ -29,4 +29,8 @@ public class Arquivos {
 
     @NotNull(message = "A data de criação é obrigatória")
     private LocalDateTime criadoEm = LocalDateTime.now();
+
+    @OneToOne(mappedBy = "fotoUsuario")
+    private Usuarios usuario;
+
 }

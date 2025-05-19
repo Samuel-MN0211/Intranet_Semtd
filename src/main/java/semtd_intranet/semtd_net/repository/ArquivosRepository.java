@@ -24,4 +24,6 @@ public interface ArquivosRepository extends JpaRepository<Arquivos, Long> {
     Arquivos findByNomeArquivo(String nomeArquivo);
 
     void deleteByNomeArquivo(String nomeArquivo);
+
+    void deleteById(Long id);
 }

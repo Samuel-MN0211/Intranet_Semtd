@@ -3,8 +3,10 @@ package semtd_intranet.semtd_net.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import semtd_intranet.semtd_net.model.Usuarios;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -28,11 +30,15 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(UserDetails userDetails) { // Gera o token JWT com o username (email) e a data de
-                                                           // expiração.
+    public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .claim("roles", userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .toList())
                 .setIssuedAt(new Date())
+                .setId(String.valueOf(((Usuarios) userDetails).getId()))
+                .setIssuer("semtd.net")
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();

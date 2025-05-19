@@ -3,6 +3,8 @@
 
 package semtd_intranet.semtd_net.security;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.*;
@@ -18,9 +20,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 import semtd_intranet.semtd_net.model.Gerencia;
 import semtd_intranet.semtd_net.model.Usuarios;
-import semtd_intranet.semtd_net.service.UsuarioDetailsService;
+
 import semtd_intranet.semtd_net.repository.GerenciaRepository;
 import semtd_intranet.semtd_net.repository.UsuariosRepository;
+import semtd_intranet.semtd_net.service.UsuariosService;
 
 @Configuration
 @EnableMethodSecurity
@@ -30,7 +33,7 @@ public class SecurityConfig {
     private JwtAuthFilter jwtAuthFilter;
 
     @Autowired
-    private UsuarioDetailsService userDetailsService;
+    private UsuariosService usuariosService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() { // Criptografa senhas dos usuários.
@@ -43,11 +46,10 @@ public class SecurityConfig {
                                                  // ser acessado sem estar logado
                 // TODO: REVER ROTA DE ADMIN EXPOSTA APÓS TESTE E VALIDAÇÃO
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/usuarios/cadastraradmin").permitAll() // Permite /auth/login e
-                                                                                                // /usuarios/cadastraradmin
-                                                                                                // sem autenticação
-
-                        .anyRequest().authenticated()) // Torna todas as outras rotas protegidas
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/usuarios/criar", "/usuarios/cadastraradmin").hasRole("ADMIN") // Apenas ADMIN
+                        .anyRequest()
+                        .authenticated()) // Torna todas as outras rotas protegidas
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Usa JWT
                                                                                                               // no
                                                                                                               // lugar
@@ -62,48 +64,9 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder encoder)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
+                .userDetailsService(usuariosService) // <--- atualize aqui
                 .passwordEncoder(encoder)
                 .and()
                 .build();
     }
-
-    // BEAN PARA CRIAÇÃO DE ADMIN PADRAO E GERÊNCIA PADRÃO AO INICIAR A APLICAÇÃO
-    // (ADMIN PRECISA NECESSARIAMENTE DE UMA GERÊNCIA PARA SER CRIADO) -
-    // TROUBLESHOOTING
-    @Component
-    public class AdminInitializer implements CommandLineRunner {
-
-        @Autowired
-        private UsuariosRepository usuariosRepository;
-
-        @Autowired
-        private GerenciaRepository gerenciaRepository;
-
-        @Autowired
-        private BCryptPasswordEncoder encoder;
-
-        @Override
-        public void run(String... args) {
-            if (usuariosRepository.findByEmail("admin@semtd.com").isEmpty()) {
-
-                // Cria a gerência do admin
-                Gerencia gerenciaAdmin = new Gerencia();
-                gerenciaAdmin.setNome("Gerência do Admin");
-                gerenciaAdmin.setObjetivos("Gerência criada automaticamente para o usuário administrador.");
-                gerenciaAdmin = gerenciaRepository.save(gerenciaAdmin);
-
-                // Cria o admin
-                Usuarios admin = new Usuarios();
-                admin.setNome("Admin");
-                admin.setEmail("admin@semtd.com");
-                admin.setSenha(encoder.encode("admin123"));
-                admin.setFuncao("ADMIN");
-                admin.setGerencia(gerenciaAdmin); // Associa a gerência ao admin
-
-                usuariosRepository.save(admin);
-            }
-        }
-    }
-
 }

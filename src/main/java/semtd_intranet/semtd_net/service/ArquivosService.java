@@ -1,20 +1,25 @@
 package semtd_intranet.semtd_net.service;
 
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import semtd_intranet.semtd_net.DTO.ArquivosDTO;
 import semtd_intranet.semtd_net.model.Arquivos;
+import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.ArquivosRepository;
+import semtd_intranet.semtd_net.repository.UsuariosRepository;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.io.File;
-import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,103 +35,93 @@ public class ArquivosService {
     @Autowired
     private ArquivosRepository arquivosRepository;
 
-    public List<Arquivos> listarTodos() {
-        return arquivosRepository.findAll();
-    }
+    @Autowired
+    private UsuariosRepository usuariosRepository;
 
-    public Optional<Arquivos> buscarPorId(Long id) {
-        return arquivosRepository.findById(id);
-    }
-
-    public Arquivos salvarArquivo(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new IOException("Arquivo está vazio.");
+    public ResponseEntity<?> obterFotoDoUsuarioLogado() {
+        Usuarios usuario = getUsuarioAutenticado();
+        Arquivos foto = usuario.getFotoUsuario();
+        if (foto == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        if (file.getSize() > 10 * 1024 * 1024) {
-            throw new IOException("Arquivo excede 10MB.");
-        }
-
-        File dir = new File(storagePath);
-        if (!dir.exists())
-            dir.mkdirs();
-
-        Path path = Paths.get(storagePath, file.getOriginalFilename());
-        Files.write(path, file.getBytes());
-
-        Arquivos arquivo = new Arquivos();
-        arquivo.setNomeArquivo(file.getOriginalFilename());
-        arquivo.setCaminhoArquivo(path.toString());
-
-        return arquivosRepository.save(arquivo);
-    }
-
-    public boolean deletarPorId(Long id) {
-        Optional<Arquivos> opt = arquivosRepository.findById(id);
-        if (opt.isEmpty())
-            return false;
-
-        deletarFisicamente(opt.get().getCaminhoArquivo());
-        arquivosRepository.deleteById(id);
-        return true;
-    }
-
-    public boolean deletarPorNome(String nome) {
-        List<Arquivos> arquivos = arquivosRepository.findAllByNomeArquivo(nome);
-        if (arquivos.isEmpty())
-            return false;
-
-        for (Arquivos arquivo : arquivos) {
-            deletarFisicamente(arquivo.getCaminhoArquivo());
-        }
-
-        arquivosRepository.deleteAll(arquivos);
-        return true;
-    }
-
-    private void deletarFisicamente(String caminho) {
         try {
-            Files.deleteIfExists(Paths.get(caminho));
+            return retornarArquivo(foto);
         } catch (IOException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao acessar a imagem.");
         }
     }
 
-    public ResponseEntity<ByteArrayResource> obterPdfPorId(Long id) throws IOException {
-        Optional<Arquivos> opt = arquivosRepository.findById(id);
-        if (opt.isEmpty())
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> salvarOuAtualizarFotoDoUsuarioLogado(MultipartFile file) {
+        Usuarios usuario = getUsuarioAutenticado();
 
-        return retornarArquivoComoPdf(opt.get());
+        // Deleta a antiga, se existir
+        Arquivos fotoAntiga = usuario.getFotoUsuario();
+        if (fotoAntiga != null) {
+            Path path = Paths.get(storagePath, fotoAntiga.getNomeArquivo());
+            try {
+                Files.deleteIfExists(path);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar foto antiga.");
+            }
+            arquivosRepository.deleteById(fotoAntiga.getId());
+        }
+
+        try {
+            Arquivos novaFoto = salvarArquivo(file);
+            usuario.setFotoUsuario(novaFoto);
+            usuariosRepository.save(usuario);
+            return ResponseEntity.ok("Foto atualizada com sucesso");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar nova foto.");
+        }
     }
 
-    public List<ArquivosDTO> buscarMetadadosPorNome(String nome) {
-        List<Arquivos> arquivos = arquivosRepository.findAllByNomeArquivo(nome);
-        return arquivos.stream()
-                .map(a -> new ArquivosDTO(
-                        a.getId(),
-                        a.getNomeArquivo(),
-                        "/semtd/arquivos/" + a.getId()))
-                .toList();
-    }
-
-    public ResponseEntity<ByteArrayResource> retornarArquivoComoPdf(Arquivos arquivo) throws IOException {
-        Path path = Paths.get(arquivo.getCaminhoArquivo());
-        if (!Files.exists(path))
+    public ResponseEntity<?> deletarFotoDoUsuarioLogado() {
+        Usuarios usuario = getUsuarioAutenticado();
+        Arquivos foto = usuario.getFotoUsuario();
+        if (foto == null)
             return ResponseEntity.notFound().build();
 
-        byte[] data = Files.readAllBytes(path);
-        ByteArrayResource resource = new ByteArrayResource(data);
+        arquivosRepository.deleteById(foto.getId());
+        usuario.setFotoUsuario(null);
+        usuariosRepository.save(usuario);
+        return ResponseEntity.noContent().build();
+    }
+
+    private ResponseEntity<?> retornarArquivo(Arquivos arquivo) throws IOException {
+        Path filePath = Paths.get(storagePath, arquivo.getNomeArquivo());
+        if (!Files.exists(filePath)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        byte[] dados = Files.readAllBytes(filePath);
+        ByteArrayResource resource = new ByteArrayResource(dados);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + arquivo.getNomeArquivo() + "\"")
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(data.length)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + arquivo.getNomeArquivo() + "\"")
+                .contentLength(dados.length)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
 
-    // lista crua de arquivos
-    public List<Arquivos> buscarPorNome(String nome) {
-        return arquivosRepository.findAllByNomeArquivo(nome);
+    private Usuarios getUsuarioAutenticado() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return usuariosRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário autenticado não encontrado"));
+    }
+
+    public Arquivos salvarArquivo(MultipartFile file) throws IOException {
+        String nomeOriginal = file.getOriginalFilename();
+        byte[] dados = file.getBytes();
+
+        Path filePath = Paths.get(storagePath, nomeOriginal);
+        Files.write(filePath, dados);
+
+        Arquivos arquivo = new Arquivos();
+        arquivo.setNomeArquivo(nomeOriginal);
+
+        // Salva no banco de dados
+        return arquivosRepository.save(arquivo);
     }
 }

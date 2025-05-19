@@ -1,0 +1,11 @@
+package semtd_intranet.semtd_net.enums;
+
+//CARGOS DE USUARIO
+public enum Cargo {
+    GERENTE_EXECUTIVO,
+    GERENTE_OPERACIONAL,
+    DIRETOR,
+    SECRETARIO_EXECUTIVO,
+    ANALISTA_ADMINISTRATIVO,
+    TECNICO_ADMINISTRATIVO
+}

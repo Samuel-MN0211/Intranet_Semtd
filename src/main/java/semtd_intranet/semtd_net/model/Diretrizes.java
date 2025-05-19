@@ -41,6 +41,4 @@ public class Diretrizes {
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
 
-    @ManyToMany(mappedBy = "diretrizes")
-    private Set<Gerencia> gerencias = new HashSet<>();
 }

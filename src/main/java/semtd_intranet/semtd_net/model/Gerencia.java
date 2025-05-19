@@ -6,10 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import semtd_intranet.semtd_net.enums.TipoGerencia;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "gerencias")
@@ -26,18 +25,23 @@ public class Gerencia {
     @Size(min = 2, max = 100, message = "O nome da gerência deve ter entre 2 e 100 caracteres")
     private String nome;
 
+    @NotEmpty(message = "A sigla da gerência não pode estar vazia")
+    @Size(min = 2, max = 20, message = "A sigla deve ter entre 2 e 20 caracteres")
+    private String sigla;
+
+    @NotEmpty(message = "A descrição não pode estar vazia")
+    @Size(min = 2, max = 500, message = "A descrição deve ter entre 2 e 500 caracteres")
+    private String descricao;
+
     @NotEmpty(message = "Os objetivos não podem estar vazios")
     @Size(min = 2, max = 500, message = "Os objetivos devem ter entre 2 e 500 caracteres")
     private String objetivos;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoGerencia tipoGerencia;
+
     @OneToMany(mappedBy = "gerencia")
     private List<Usuarios> usuarios;
 
-    @ManyToMany
-    @JoinTable(name = "gerencia_diretriz", joinColumns = @JoinColumn(name = "gerencia_id"), inverseJoinColumns = @JoinColumn(name = "diretriz_id"))
-    private Set<Diretrizes> diretrizes = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(name = "gerencia_sistema", joinColumns = @JoinColumn(name = "gerencia_id"), inverseJoinColumns = @JoinColumn(name = "sistema_id"))
-    private Set<Sistemas> sistemas = new HashSet<>();
 }

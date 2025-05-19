@@ -40,7 +40,4 @@ public class Sistemas {
     @Column(nullable = false)
     private String link;
 
-    @ManyToMany(mappedBy = "sistemas")
-    private Set<Gerencia> gerencias = new HashSet<>();
-
 }

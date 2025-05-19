@@ -17,10 +17,17 @@ import lombok.Data;
 import semtd_intranet.semtd_net.model.AuthRequest;
 import semtd_intranet.semtd_net.model.AuthResponse;
 import semtd_intranet.semtd_net.security.JwtUtil;
-import semtd_intranet.semtd_net.service.UsuarioDetailsService;
 
-//UTILIZADO PARA AUTENTICAÇÃO COM JWT
-//Rota /auth/login recebe email e senha, autentica e retorna JWT.
+import semtd_intranet.semtd_net.service.UsuariosService;
+
+// UTILIZADO PARA AUTENTICAÇÃO COM JWT
+// Rota /auth/login recebe email e senha, autentica e retorna JWT.
+
+// POST /auth/login
+// Body:{"email":"admin@email.com","senha":"admin"}
+
+// Todos as requisições que exigem autenticação devem incluir o JWT no cabeçalho Authorization como Bearer <token>
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -29,7 +36,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsuarioDetailsService userDetailsService;
+    private UsuariosService usuariosService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -43,7 +50,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        final UserDetails userDetails = usuariosService.loadUserByUsername(request.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthResponse(jwt));
