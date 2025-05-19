@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import semtd_intranet.semtd_net.enums.Role;
+import semtd_intranet.semtd_net.enums.TipoGerencia;
 import semtd_intranet.semtd_net.model.Gerencia;
 import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.GerenciaRepository;
@@ -36,7 +37,10 @@ public class AdminInitializer implements CommandLineRunner {
             // Cria a gerência do admin
             Gerencia gerenciaAdmin = new Gerencia();
             gerenciaAdmin.setNome("Gerência do Admin");
+            gerenciaAdmin.setDescricao("Pequeno exemplo para a gerência do admin");
+            gerenciaAdmin.setSigla("GEDA");
             gerenciaAdmin.setObjetivos("Gerência criada automaticamente para o usuário administrador.");
+            gerenciaAdmin.setTipoGerencia(TipoGerencia.valueOf("EXECUTIVA"));
             gerenciaAdmin = gerenciaRepository.save(gerenciaAdmin);
 
             // Cria o admin
@@ -45,9 +49,11 @@ public class AdminInitializer implements CommandLineRunner {
             admin.setEmail("admin@semtd.com");
             admin.setSenha(encoder.encode("admin123"));
             admin.setRoles(Set.of(Role.ADMIN));
-            admin.setGerencia(gerenciaAdmin); // Associa a gerência ao admin
+            admin.setGerencia(gerenciaAdmin);
 
             usuariosRepository.save(admin);
+            System.out.println("Roles do admin: " + admin.getRoles());
+
         }
     }
 }
