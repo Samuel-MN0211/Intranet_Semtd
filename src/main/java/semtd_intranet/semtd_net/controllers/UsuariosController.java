@@ -1,6 +1,3 @@
-
-//UTILIZADO PARA AUTENTICAÇÃO HTTP SIMPLES. DESCARTAR AO IMPLEMENTAR JWT 
-
 package semtd_intranet.semtd_net.controllers;
 
 import java.util.Set;
@@ -9,26 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import semtd_intranet.semtd_net.model.Arquivos;
+import jakarta.validation.Valid;
+import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
+import semtd_intranet.semtd_net.enums.Role;
 import semtd_intranet.semtd_net.model.Gerencia;
 import semtd_intranet.semtd_net.model.Usuarios;
+import semtd_intranet.semtd_net.repository.GerenciaRepository;
 import semtd_intranet.semtd_net.repository.UsuariosRepository;
-import semtd_intranet.semtd_net.security.SecurityConfig;
-import semtd_intranet.semtd_net.service.UsuariosService;
-import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
-import semtd_intranet.semtd_net.enums.Cargo;
-import semtd_intranet.semtd_net.enums.Role;
-import semtd_intranet.semtd_net.service.ArquivosService;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -38,40 +25,56 @@ public class UsuariosController {
     private UsuariosRepository usuariosRepository;
 
     @Autowired
+    private GerenciaRepository gerenciaRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UsuariosService usuarioService;
-
-    @Autowired
-    private ArquivosService arquivosService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/cadastraradmin")
-    public ResponseEntity<?> cadastrarAdmin(@RequestBody Usuarios admin) {
-        if (usuariosRepository.existsByEmail(admin.getEmail())) {
+    public ResponseEntity<?> cadastrarAdmin(@Valid @RequestBody UsuarioCadastroDTO dto) {
+        if (usuariosRepository.existsByEmail(dto.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("E-mail já cadastrado");
         }
 
-        admin.setSenha(passwordEncoder.encode(admin.getSenha()));
-        admin.setRoles(Set.of(Role.ADMIN));
-        usuariosRepository.save(admin);
+        Gerencia gerencia = gerenciaRepository.findById(dto.getGerenciaId()).orElse(null);
+        if (gerencia == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Gerência não encontrada");
+        }
 
+        Usuarios admin = new Usuarios();
+        admin.setNome(dto.getNome());
+        admin.setSenha(passwordEncoder.encode(dto.getSenha()));
+        admin.setEmail(dto.getEmail());
+        admin.setCargo(dto.getCargo());
+        admin.setFormacao(dto.getFormacao());
+        admin.setGerencia(gerencia);
+        admin.setRoles(Set.of(Role.ADMIN));
+
+        usuariosRepository.save(admin);
         return ResponseEntity.status(HttpStatus.CREATED).body("Admin cadastrado com sucesso");
     }
 
-    // MODIFICAR CADASTRO DE NOVOS ADMS AO IR PARA PRODUÇÃO / MUDAR REGRA DE NEGOCIO
-    // NO FRONT. ATUALMENTE ESTA CONFIGURADA PARA NÃO EXIGIR MUITOS PARAMETROS
-
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/cadastrarusuario")
-    public ResponseEntity<?> criarUsuario(@RequestBody Usuarios usuario) {
-        if (usuariosRepository.existsByEmail(usuario.getEmail())) {
+    public ResponseEntity<?> criarUsuario(@Valid @RequestBody UsuarioCadastroDTO dto) {
+        if (usuariosRepository.existsByEmail(dto.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("E-mail já cadastrado");
         }
 
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        usuario.setRoles(Set.of(Role.USUARIO)); // sempre será USUARIO
+        Gerencia gerencia = gerenciaRepository.findById(dto.getGerenciaId()).orElse(null);
+        if (gerencia == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Gerência não encontrada");
+        }
+
+        Usuarios usuario = new Usuarios();
+        usuario.setNome(dto.getNome());
+        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        usuario.setEmail(dto.getEmail());
+        usuario.setCargo(dto.getCargo());
+        usuario.setFormacao(dto.getFormacao());
+        usuario.setGerencia(gerencia);
+        usuario.setRoles(Set.of(Role.USUARIO));
 
         usuariosRepository.save(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com sucesso");
