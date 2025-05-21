@@ -19,18 +19,15 @@ public class Arquivos {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty(message = "O nome do arquivo não pode estar vazio")
-    @Size(min = 2, max = 255, message = "O nome do arquivo deve ter entre 2 e 255 caracteres")
+    @NotEmpty
     private String nomeArquivo;
 
-    @NotEmpty(message = "O caminho do arquivo não pode estar vazio")
-    @Size(max = 1000, message = "O caminho do arquivo deve ter no máximo 1000 caracteres")
-    private String caminhoArquivo;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] dados;
 
-    @NotNull(message = "A data de criação é obrigatória")
     private LocalDateTime criadoEm = LocalDateTime.now();
 
     @OneToOne(mappedBy = "fotoUsuario")
     private Usuarios usuario;
-
 }

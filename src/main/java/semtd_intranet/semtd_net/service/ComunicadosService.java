@@ -16,20 +16,17 @@ public class ComunicadosService implements Service<Comunicados, Long> {
 
     @Override
     public List<Comunicados> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return comunicadosRepository.findAll();
     }
 
     @Override
     public Comunicados findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return comunicadosRepository.findById(id).orElse(null);
     }
 
     @Override
     public Comunicados save(Comunicados t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        return comunicadosRepository.save(t);
     }
 
 }

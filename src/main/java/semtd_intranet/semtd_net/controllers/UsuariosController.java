@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.UsuariosRepository;
 import semtd_intranet.semtd_net.security.SecurityConfig;
 import semtd_intranet.semtd_net.service.UsuariosService;
+import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
 import semtd_intranet.semtd_net.enums.Cargo;
 import semtd_intranet.semtd_net.enums.Role;
 import semtd_intranet.semtd_net.service.ArquivosService;
@@ -60,46 +62,18 @@ public class UsuariosController {
 
     // MODIFICAR CADASTRO DE NOVOS ADMS AO IR PARA PRODUÇÃO / MUDAR REGRA DE NEGOCIO
     // NO FRONT. ATUALMENTE ESTA CONFIGURADA PARA NÃO EXIGIR MUITOS PARAMETROS
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/criar")
-    public ResponseEntity<?> criarUsuarioComFoto(
-            @RequestParam("nome") String nome,
-            @RequestParam("senha") String senha,
-            @RequestParam("email") String email,
-            @RequestParam(value = "cargo", required = false) Cargo cargo,
-            @RequestParam(value = "formacao", required = false) String formacao,
-            @RequestParam(value = "gerenciaId", required = false) Long gerenciaId,
-            @RequestParam(value = "foto", required = false) MultipartFile foto) {
 
-        if (usuariosRepository.existsByEmail(email)) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/cadastrarusuario")
+    public ResponseEntity<?> criarUsuario(@RequestBody Usuarios usuario) {
+        if (usuariosRepository.existsByEmail(usuario.getEmail())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("E-mail já cadastrado");
         }
 
-        Usuarios usuario = new Usuarios();
-        usuario.setNome(nome);
-        usuario.setEmail(email);
-        usuario.setSenha(passwordEncoder.encode(senha));
-        usuario.setCargo(cargo);
-        usuario.setFormacao(formacao);
-        usuario.setRoles(Set.of(Role.USUARIO));
-
-        if (gerenciaId != null) {
-            Gerencia gerencia = new Gerencia();
-            gerencia.setId(gerenciaId);
-            usuario.setGerencia(gerencia);
-        }
-
-        if (foto != null && !foto.isEmpty()) {
-            try {
-                Arquivos fotoSalva = arquivosService.salvarArquivo(foto);
-                usuario.setFotoUsuario(fotoSalva);
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar foto.");
-            }
-        }
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        usuario.setRoles(Set.of(Role.USUARIO)); // sempre será USUARIO
 
         usuariosRepository.save(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com sucesso");
     }
-
 }

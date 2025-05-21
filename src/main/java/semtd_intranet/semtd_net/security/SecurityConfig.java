@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,12 +44,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable()) // Desativa csrf expondo o endpoint de criação de admin para que possa
-                                                 // ser acessado sem estar logado
+        return http.csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
+                .csrf(AbstractHttpConfigurer::disable)
+                .requestCache(RequestCacheConfigurer::disable)
+                // Desativa csrf expondo o endpoint de criação de admin para que possa
+                // ser acessado sem estar logado
                 // TODO: REVER ROTA DE ADMIN EXPOSTA APÓS TESTE E VALIDAÇÃO
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/usuarios/criar", "/usuarios/cadastraradmin").hasRole("ADMIN") // Apenas ADMIN
+                        .requestMatchers("/auth/login")
+                        .permitAll()
+                        .requestMatchers("/usuarios/cadastraradmin").hasRole("ADMIN") // Apenas ADMIN
+                        .requestMatchers("/usuarios/cadastrarusuario").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()) // Torna todas as outras rotas protegidas
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Usa JWT
@@ -64,7 +72,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder encoder)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(usuariosService) // <--- atualize aqui
+                .userDetailsService(usuariosService)
                 .passwordEncoder(encoder)
                 .and()
                 .build();

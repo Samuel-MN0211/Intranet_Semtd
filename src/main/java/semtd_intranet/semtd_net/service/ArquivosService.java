@@ -45,11 +45,7 @@ public class ArquivosService {
             return ResponseEntity.notFound().build();
         }
 
-        try {
-            return retornarArquivo(foto);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao acessar a imagem.");
-        }
+        return retornarArquivo(foto);
     }
 
     public ResponseEntity<?> salvarOuAtualizarFotoDoUsuarioLogado(MultipartFile file) {
@@ -89,18 +85,12 @@ public class ArquivosService {
         return ResponseEntity.noContent().build();
     }
 
-    private ResponseEntity<?> retornarArquivo(Arquivos arquivo) throws IOException {
-        Path filePath = Paths.get(storagePath, arquivo.getNomeArquivo());
-        if (!Files.exists(filePath)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        byte[] dados = Files.readAllBytes(filePath);
-        ByteArrayResource resource = new ByteArrayResource(dados);
+    private ResponseEntity<?> retornarArquivo(Arquivos arquivo) {
+        ByteArrayResource resource = new ByteArrayResource(arquivo.getDados());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + arquivo.getNomeArquivo() + "\"")
-                .contentLength(dados.length)
+                .contentLength(arquivo.getDados().length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
@@ -115,13 +105,11 @@ public class ArquivosService {
         String nomeOriginal = file.getOriginalFilename();
         byte[] dados = file.getBytes();
 
-        Path filePath = Paths.get(storagePath, nomeOriginal);
-        Files.write(filePath, dados);
-
         Arquivos arquivo = new Arquivos();
         arquivo.setNomeArquivo(nomeOriginal);
+        arquivo.setDados(dados);
 
-        // Salva no banco de dados
         return arquivosRepository.save(arquivo);
     }
+
 }

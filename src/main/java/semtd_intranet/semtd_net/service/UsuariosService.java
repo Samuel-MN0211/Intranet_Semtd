@@ -21,20 +21,17 @@ public class UsuariosService implements Service<Usuarios, Long>, UserDetailsServ
 
     @Override
     public List<Usuarios> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return usuariosRepository.findAll();
     }
 
     @Override
     public Usuarios findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return usuariosRepository.findById(id).orElse(null);
     }
 
     @Override
     public Usuarios save(Usuarios t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        return usuariosRepository.save(t);
     }
 
     @Override

@@ -16,20 +16,17 @@ public class SistemasService implements Service<Sistemas, Long> {
 
     @Override
     public List<Sistemas> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return sistemasRepository.findAll();
     }
 
     @Override
     public Sistemas findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return sistemasRepository.findById(id).orElse(null);
     }
 
     @Override
     public Sistemas save(Sistemas t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        return sistemasRepository.save(t);
     }
 
 }

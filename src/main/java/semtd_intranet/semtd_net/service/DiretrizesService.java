@@ -16,20 +16,17 @@ public class DiretrizesService implements Service<Diretrizes, Long> {
 
     @Override
     public List<Diretrizes> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return diretrizesRepository.findAll();
     }
 
     @Override
     public Diretrizes findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return diretrizesRepository.findById(id).orElse(null);
     }
 
     @Override
     public Diretrizes save(Diretrizes t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        return diretrizesRepository.save(t);
     }
 
 }

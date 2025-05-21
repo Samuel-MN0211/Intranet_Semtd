@@ -32,9 +32,11 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+
+        // Verifica se o admin já existe
         if (usuariosRepository.findByEmail("admin@semtd.com").isEmpty()) {
 
-            // Cria a gerência do admin
+            // Cria a gerência exemplo
             Gerencia gerenciaAdmin = new Gerencia();
             gerenciaAdmin.setNome("Gerência do Admin");
             gerenciaAdmin.setDescricao("Pequeno exemplo para a gerência do admin");
@@ -54,6 +56,16 @@ public class AdminInitializer implements CommandLineRunner {
             usuariosRepository.save(admin);
             System.out.println("Roles do admin: " + admin.getRoles());
 
+            // Cria um usuário comum na mesma gerência
+            Usuarios usuario = new Usuarios();
+            usuario.setNome("Usuário Padrão");
+            usuario.setEmail("usuario@semtd.com");
+            usuario.setSenha(encoder.encode("usuario123"));
+            usuario.setRoles(Set.of(Role.USUARIO));
+            usuario.setGerencia(gerenciaAdmin);
+
+            usuariosRepository.save(usuario);
+            System.out.println("Usuário padrão criado com sucesso.");
         }
     }
 }

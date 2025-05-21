@@ -16,20 +16,17 @@ public class GerenciaService implements Service<Gerencia, Long> {
 
     @Override
     public List<Gerencia> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return gerenciaRepository.findAll();
     }
 
     @Override
     public Gerencia findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        return gerenciaRepository.findById(id).orElse(null);
     }
 
     @Override
     public Gerencia save(Gerencia t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        return gerenciaRepository.save(t);
     }
 
 }
