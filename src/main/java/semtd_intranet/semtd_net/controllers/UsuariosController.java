@@ -79,4 +79,26 @@ public class UsuariosController {
         usuariosRepository.save(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com sucesso");
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/listar")
+    public ResponseEntity<?> listarUsuarios() {
+        var usuarios = usuariosRepository.findAll().stream().map(u -> {
+            String tipo = u.getRoles().contains(Role.ADMIN) ? "ADMIN" : "USUARIO";
+            return String.format("Nome: %s | Email: %s | Tipo: %s", u.getNome(), u.getEmail(), tipo);
+        }).toList();
+        return ResponseEntity.ok(usuarios);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deletarUsuarioPorEmail(@RequestParam String email) {
+        Usuarios usuario = usuariosRepository.findByEmail(email).orElse(null);
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+        usuariosRepository.delete(usuario);
+        return ResponseEntity.ok("Usuário deletado com sucesso");
+    }
+
 }

@@ -56,6 +56,8 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/usuarios/cadastraradmin").hasRole("ADMIN") // Apenas ADMIN
                         .requestMatchers("/usuarios/cadastrarusuario").hasRole("ADMIN")
+                        .requestMatchers("/usuarios/listar").hasRole("ADMIN")
+                        .requestMatchers("/usuarios/delete").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()) // Torna todas as outras rotas protegidas
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Usa JWT
