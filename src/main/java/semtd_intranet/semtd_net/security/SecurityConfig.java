@@ -25,6 +25,7 @@ import semtd_intranet.semtd_net.model.Usuarios;
 
 import semtd_intranet.semtd_net.repository.GerenciaRepository;
 import semtd_intranet.semtd_net.repository.UsuariosRepository;
+import semtd_intranet.semtd_net.service.UsuariosDetailsService;
 import semtd_intranet.semtd_net.service.UsuariosService;
 
 @Configuration
@@ -35,7 +36,7 @@ public class SecurityConfig {
     private JwtAuthFilter jwtAuthFilter;
 
     @Autowired
-    private UsuariosService usuariosService;
+    private UsuariosDetailsService usuariosDetailsService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() { // Criptografa senhas dos usuários.
@@ -54,10 +55,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login")
                         .permitAll()
-                        .requestMatchers("/usuarios/cadastraradmin").hasRole("ADMIN") // Apenas ADMIN
+                        .requestMatchers("/usuarios/cadastraradmin").hasRole("ADMIN") // Porque estão sendo listadas
+                                                                                      // individualmente? Por algum
+                                                                                      // motivo as requisições
+                                                                                      // espontaneamente não ativam o
+                                                                                      // filtro caso agrupadas (??)
                         .requestMatchers("/usuarios/cadastrarusuario").hasRole("ADMIN")
                         .requestMatchers("/usuarios/listar").hasRole("ADMIN")
                         .requestMatchers("/usuarios/delete").hasRole("ADMIN")
+                        .requestMatchers("/diretrizes/**").hasRole("ADMIN")
                         .anyRequest()
                         .authenticated()) // Torna todas as outras rotas protegidas
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Usa JWT
@@ -74,7 +80,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder encoder)
             throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(usuariosService)
+                .userDetailsService(usuariosDetailsService)
                 .passwordEncoder(encoder)
                 .and()
                 .build();

@@ -17,7 +17,7 @@ import lombok.Data;
 import semtd_intranet.semtd_net.model.AuthRequest;
 import semtd_intranet.semtd_net.model.AuthResponse;
 import semtd_intranet.semtd_net.security.JwtUtil;
-
+import semtd_intranet.semtd_net.service.UsuariosDetailsService;
 import semtd_intranet.semtd_net.service.UsuariosService;
 
 // UTILIZADO PARA AUTENTICAÇÃO COM JWT
@@ -36,7 +36,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsuariosService usuariosService;
+    private UsuariosDetailsService usuariosDetailsService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -50,7 +50,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
         }
 
-        final UserDetails userDetails = usuariosService.loadUserByUsername(request.getEmail());
+        final UserDetails userDetails = usuariosDetailsService.loadUserByUsername(request.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new AuthResponse(jwt));

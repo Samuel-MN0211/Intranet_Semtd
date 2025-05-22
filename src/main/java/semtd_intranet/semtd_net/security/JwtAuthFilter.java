@@ -15,6 +15,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import semtd_intranet.semtd_net.service.UsuariosDetailsService;
 import semtd_intranet.semtd_net.service.UsuariosService;
 
 @Component
@@ -24,7 +25,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private UsuariosService usuariosService;
+    private UsuariosDetailsService usuariosDetailsService;
 
     // Ignora a filtragem JWT para endpoints públicos como login e cadastro de
     // usuário
@@ -61,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                                                                                // já está autenticado
             // Se o usuário não estiver autenticado, carrega os detalhes do usuário e valida
             // o token
-            UserDetails userDetails = usuariosService.loadUserByUsername(email);
+            UserDetails userDetails = usuariosDetailsService.loadUserByUsername(email);
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());

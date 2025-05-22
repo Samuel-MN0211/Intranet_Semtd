@@ -19,5 +19,9 @@ import java.util.List;
 
 @Repository
 public interface DiretrizesRepository extends JpaRepository<Diretrizes, Long> {
+    Optional<Diretrizes> findByTitulo(String titulo);
 
+    boolean existsByTitulo(String titulo);
+
+    void deleteByTitulo(String titulo);
 }
