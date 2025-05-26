@@ -7,6 +7,7 @@ import semtd_intranet.semtd_net.enums.Cargo;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class UsuarioCadastroDTO {
 
     @NotBlank
@@ -30,5 +31,6 @@ public class UsuarioCadastroDTO {
 
     @NotNull
     private Long gerenciaId;
+
 
 }

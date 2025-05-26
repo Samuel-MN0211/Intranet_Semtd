@@ -57,12 +57,12 @@ public class SecurityConfig {
                         .requestMatchers("/usuarios/delete").hasRole("ADMIN")
 
                         .requestMatchers("/diretrizes/**", "/sistemas/**",
-                                "/cards-evento/**")
+                                "/cards-evento/**", "/gerencia/**")
                         .authenticated() // Apenas exige login,
                                          // permissões controladas por
                                          // @PreAuthorize
                         .anyRequest()
-                        .authenticated()) // Torna todas as outras rotas protegidas
+                        .authenticated()) // Torna as rotas protegidas.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
