@@ -46,7 +46,7 @@ public class SecurityConfig {
                                                  // ser acessado sem estar logado
                 // TODO: REVER ROTA DE ADMIN EXPOSTA APÓS TESTE E VALIDAÇÃO
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login", "/gerencia/**").permitAll()
                         .requestMatchers("/usuarios/criar", "/usuarios/cadastraradmin").hasRole("ADMIN") // Apenas ADMIN
                         .anyRequest()
                         .authenticated()) // Torna todas as outras rotas protegidas
