@@ -18,6 +18,7 @@ public class GerenciaController {
     @Autowired
     private GerenciaService gerenciaService;
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     @GetMapping("/listar")
     public ResponseEntity<List<GerenciaDTO>> getAllGerencias() {
         List<Gerencia> gerencias = gerenciaService.findAll();
@@ -27,6 +28,7 @@ public class GerenciaController {
         return ResponseEntity.ok(dtos);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     @GetMapping("/buscar/{id}")
     public ResponseEntity<GerenciaDTO> getGerencia(@PathVariable Long id) {
         Gerencia gerencia = gerenciaService.findById(id);
