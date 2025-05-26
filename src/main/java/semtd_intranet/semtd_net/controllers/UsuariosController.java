@@ -1,6 +1,5 @@
 package semtd_intranet.semtd_net.controllers;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
 import semtd_intranet.semtd_net.enums.Role;
-import semtd_intranet.semtd_net.model.Usuarios;
+
 import semtd_intranet.semtd_net.service.UsuariosService;
 
 @RestController

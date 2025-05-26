@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.UsuariosRepository;
 
 @Service

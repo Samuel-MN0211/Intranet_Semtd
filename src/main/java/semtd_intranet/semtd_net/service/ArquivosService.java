@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import semtd_intranet.semtd_net.DTO.ArquivosDTO;
+
 import semtd_intranet.semtd_net.model.Arquivos;
 import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.ArquivosRepository;
@@ -18,13 +18,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.io.File;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ArquivosService {

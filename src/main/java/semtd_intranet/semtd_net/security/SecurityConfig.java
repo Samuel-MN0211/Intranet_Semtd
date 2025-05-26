@@ -3,10 +3,8 @@
 
 package semtd_intranet.semtd_net.security;
 
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+
 import org.springframework.context.annotation.*;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,17 +14,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
-import semtd_intranet.semtd_net.model.Gerencia;
-import semtd_intranet.semtd_net.model.Usuarios;
-
-import semtd_intranet.semtd_net.repository.GerenciaRepository;
-import semtd_intranet.semtd_net.repository.UsuariosRepository;
 import semtd_intranet.semtd_net.service.UsuariosDetailsService;
-import semtd_intranet.semtd_net.service.UsuariosService;
 
 @Configuration
 @EnableMethodSecurity
@@ -63,14 +55,13 @@ public class SecurityConfig {
                         .requestMatchers("/usuarios/cadastrarusuario").hasRole("ADMIN")
                         .requestMatchers("/usuarios/listar").hasRole("ADMIN")
                         .requestMatchers("/usuarios/delete").hasRole("ADMIN")
-                        .requestMatchers("/diretrizes/**").hasRole("ADMIN")
+
+                        .requestMatchers("/diretrizes/**", "/sistemas/**").authenticated() // Apenas exige login,
+                                                                                           // permissões controladas por
+                                                                                           // @PreAuthorize
                         .anyRequest()
                         .authenticated()) // Torna todas as outras rotas protegidas
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Usa JWT
-                                                                                                              // no
-                                                                                                              // lugar
-                                                                                                              // de
-                                                                                                              // sessões.
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

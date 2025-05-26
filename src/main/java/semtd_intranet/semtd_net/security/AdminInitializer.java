@@ -31,7 +31,7 @@ public class AdminInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (usuariosRepository.findByEmail("admin@semtd.com").isEmpty()) {
 
-            // Criação da gerência
+            // Criação da gerência (obrigatório para associar a qualquer usuário)
             Gerencia gerenciaAdmin = new Gerencia();
             gerenciaAdmin.setNome("Gerência do Admin");
             gerenciaAdmin.setDescricao("Pequeno exemplo para a gerência do admin");

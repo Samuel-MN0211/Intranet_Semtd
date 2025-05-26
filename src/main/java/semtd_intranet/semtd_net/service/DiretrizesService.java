@@ -2,6 +2,8 @@ package semtd_intranet.semtd_net.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import semtd_intranet.semtd_net.model.Diretrizes;
 import semtd_intranet.semtd_net.repository.DiretrizesRepository;
 
@@ -15,6 +17,9 @@ public class DiretrizesService {
     private DiretrizesRepository diretrizesRepository;
 
     public Diretrizes salvar(Diretrizes diretriz) {
+        if (diretrizesRepository.existsByTitulo(diretriz.getTitulo())) {
+            throw new RuntimeException("Já existe uma diretriz com o título '" + diretriz.getTitulo() + "'.");
+        }
         return diretrizesRepository.save(diretriz);
     }
 
@@ -38,10 +43,12 @@ public class DiretrizesService {
         return diretrizesRepository.existsByTitulo(titulo);
     }
 
+    @Transactional
     public void deletarPorId(Long id) {
         diretrizesRepository.deleteById(id);
     }
 
+    @Transactional
     public void deletarPorTitulo(String titulo) {
         diretrizesRepository.deleteByTitulo(titulo);
     }
