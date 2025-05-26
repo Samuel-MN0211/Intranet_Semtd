@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import semtd_intranet.semtd_net.DTO.GerenciaDTO;
 import semtd_intranet.semtd_net.model.Gerencia;
@@ -17,7 +18,7 @@ public class GerenciaController {
     @Autowired
     private GerenciaService gerenciaService;
 
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity<List<GerenciaDTO>> getAllGerencias() {
         List<Gerencia> gerencias = gerenciaService.findAll();
         List<GerenciaDTO> dtos = gerencias.stream()
@@ -26,19 +27,21 @@ public class GerenciaController {
         return ResponseEntity.ok(dtos);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/buscar/{id}")
     public ResponseEntity<GerenciaDTO> getGerencia(@PathVariable Long id) {
         Gerencia gerencia = gerenciaService.findById(id);
         return ResponseEntity.ok(new GerenciaDTO(gerencia));
     }
 
-    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/criar")
     public ResponseEntity<Gerencia> createGerencia(@RequestBody @Valid GerenciaDTO dto) {
         Gerencia criada = gerenciaService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(criada);
     }
 
-    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/editar/{id}")
     public ResponseEntity<Gerencia> updateGerencia(
             @PathVariable Long id,
             @RequestBody @Valid GerenciaDTO dto) {
@@ -46,7 +49,8 @@ public class GerenciaController {
         return ResponseEntity.ok(atualizada);
     }
 
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deleteGerencia(@PathVariable Long id) {
         gerenciaService.delete(id);
         return ResponseEntity.noContent().build();

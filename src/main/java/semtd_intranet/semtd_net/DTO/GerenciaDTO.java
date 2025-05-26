@@ -36,7 +36,7 @@ public class GerenciaDTO {
     @NotNull
     private TipoGerencia tipoGerencia;
 
-    private List<UsuarioDTO> usuarios;
+    private List<UsuarioCadastroDTO> usuarios;
 
     // Construtor para criar DTO a partir da entidade
     public GerenciaDTO(Gerencia entity) {
@@ -50,7 +50,7 @@ public class GerenciaDTO {
         if (entity.getUsuarios() != null) {
             this.usuarios = entity.getUsuarios()
                     .stream()
-                    .map(UsuarioDTO::new)
+                    .map(UsuarioCadastroDTO::new)
                     .toList();
         }
     }

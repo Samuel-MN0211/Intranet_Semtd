@@ -11,14 +11,14 @@ import semtd_intranet.semtd_net.model.Usuarios;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioDTO {
+public class UsuarioCadastroDTO {
 
         private Long id;
         private String nome;
         private String email;
         private Cargo cargo;
 
-        public UsuarioDTO(Usuarios usuario) {
+        public UsuarioCadastroDTO(Usuarios usuario) {
             this.id = usuario.getId();
             this.nome = usuario.getNome();
             this.email = usuario.getEmail();
