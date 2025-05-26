@@ -1,5 +1,6 @@
 package semtd_intranet.semtd_net.controllers;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
 import semtd_intranet.semtd_net.enums.Role;
-
+import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.service.UsuariosService;
 
 @RestController
@@ -58,6 +59,34 @@ public class UsuariosController {
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(usuarios);
+    }
+
+    // Listar Usuários por ID de gerência
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @GetMapping("/por-gerencia/{idGerencia}")
+    public ResponseEntity<List<String>> listarUsuariosPorGerencia(@PathVariable Long idGerencia) {
+        List<Usuarios> usuarios = usuariosService.listarPorGerencia(idGerencia);
+
+        List<String> resposta = usuarios.stream()
+                .map(u -> String.format("Nome: %s | Email: %s | Função: %s", u.getNome(), u.getEmail(),
+                        u.getFormacao()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(resposta);
+    }
+
+    // Listar usuarios por nome de gerência
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @GetMapping("/por-nome-gerencia")
+    public ResponseEntity<List<String>> listarUsuariosPorNomeGerencia(@RequestParam String nome) {
+        List<Usuarios> usuarios = usuariosService.listarPorNomeGerencia(nome);
+
+        List<String> resposta = usuarios.stream()
+                .map(u -> String.format("Nome: %s | Email: %s | Função: %s", u.getNome(), u.getEmail(),
+                        u.getFormacao()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(resposta);
     }
 
     @DeleteMapping("/delete")

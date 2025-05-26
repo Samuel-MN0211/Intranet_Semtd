@@ -62,4 +62,12 @@ public class UsuariosService {
         usuariosRepository.findByEmail(email).ifPresent(usuariosRepository::delete);
     }
 
+    public List<Usuarios> listarPorGerencia(Long idGerencia) {
+        return usuariosRepository.findByGerenciaId(idGerencia);
+    }
+
+    public List<Usuarios> listarPorNomeGerencia(String nome) {
+        return usuariosRepository.findByGerenciaNomeIgnoreCaseContaining(nome);
+    }
+
 }

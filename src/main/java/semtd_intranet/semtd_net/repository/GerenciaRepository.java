@@ -1,8 +1,9 @@
 package semtd_intranet.semtd_net.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import semtd_intranet.semtd_net.model.Cardshomepage;
 import semtd_intranet.semtd_net.model.Gerencia;
 
 import org.springframework.stereotype.Repository;

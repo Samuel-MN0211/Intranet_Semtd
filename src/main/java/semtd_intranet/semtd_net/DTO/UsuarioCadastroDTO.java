@@ -1,6 +1,7 @@
 package semtd_intranet.semtd_net.DTO;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import semtd_intranet.semtd_net.enums.Cargo;
@@ -31,6 +32,5 @@ public class UsuarioCadastroDTO {
 
     @NotNull
     private Long gerenciaId;
-
 
 }

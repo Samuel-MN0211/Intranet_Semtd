@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import semtd_intranet.semtd_net.model.AuthRequest;
-import semtd_intranet.semtd_net.model.AuthResponse;
+import semtd_intranet.semtd_net.DTO.AuthRequestDTO;
+import semtd_intranet.semtd_net.DTO.AuthResponseDTO;
 import semtd_intranet.semtd_net.security.JwtUtil;
 import semtd_intranet.semtd_net.service.UsuariosDetailsService;
 
@@ -39,7 +39,7 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody AuthRequestDTO request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha()));
@@ -50,6 +50,6 @@ public class AuthController {
         final UserDetails userDetails = usuariosDetailsService.loadUserByUsername(request.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthResponseDTO(jwt));
     }
 }

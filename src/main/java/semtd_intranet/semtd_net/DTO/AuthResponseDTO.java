@@ -1,4 +1,4 @@
-package semtd_intranet.semtd_net.model;
+package semtd_intranet.semtd_net.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,6 +6,6 @@ import lombok.Data;
 //DADOS PARA RESPONSE DE AUTENTICAÇÃO (LOGIN)
 @Data
 @AllArgsConstructor
-public class AuthResponse {
+public class AuthResponseDTO {
     private String token;
 }

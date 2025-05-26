@@ -17,4 +17,8 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long> {
 
     public List<Usuarios> findAll();
 
+    List<Usuarios> findByGerenciaId(Long idGerencia);
+
+    List<Usuarios> findByGerenciaNomeIgnoreCaseContaining(String nome);
+
 }
