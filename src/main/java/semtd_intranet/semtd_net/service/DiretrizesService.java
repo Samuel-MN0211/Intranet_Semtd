@@ -1,35 +1,55 @@
 package semtd_intranet.semtd_net.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import semtd_intranet.semtd_net.model.Diretrizes;
 import semtd_intranet.semtd_net.repository.DiretrizesRepository;
 
-@Component
-public class DiretrizesService implements Service<Diretrizes, Long> {
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class DiretrizesService {
 
     @Autowired
     private DiretrizesRepository diretrizesRepository;
 
-    @Override
-    public List<Diretrizes> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    public Diretrizes salvar(Diretrizes diretriz) {
+        if (diretrizesRepository.existsByTitulo(diretriz.getTitulo())) {
+            throw new RuntimeException("Já existe uma diretriz com o título '" + diretriz.getTitulo() + "'.");
+        }
+        return diretrizesRepository.save(diretriz);
     }
 
-    @Override
-    public Diretrizes findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    public List<Diretrizes> listarTodas() {
+        return diretrizesRepository.findAll();
     }
 
-    @Override
-    public Diretrizes save(Diretrizes t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    public Optional<Diretrizes> buscarPorId(Long id) {
+        return diretrizesRepository.findById(id);
     }
 
+    public Optional<Diretrizes> buscarPorTitulo(String titulo) {
+        return diretrizesRepository.findByTitulo(titulo);
+    }
+
+    public boolean existePorId(Long id) {
+        return diretrizesRepository.existsById(id);
+    }
+
+    public boolean existePorTitulo(String titulo) {
+        return diretrizesRepository.existsByTitulo(titulo);
+    }
+
+    @Transactional
+    public void deletarPorId(Long id) {
+        diretrizesRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deletarPorTitulo(String titulo) {
+        diretrizesRepository.deleteByTitulo(titulo);
+    }
 }

@@ -1,46 +1,65 @@
 package semtd_intranet.semtd_net.service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
+import semtd_intranet.semtd_net.enums.Role;
+import semtd_intranet.semtd_net.model.Gerencia;
 import semtd_intranet.semtd_net.model.Usuarios;
+import semtd_intranet.semtd_net.repository.GerenciaRepository;
 import semtd_intranet.semtd_net.repository.UsuariosRepository;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.User;
 
-@Component
-public class UsuariosService implements Service<Usuarios, Long>, UserDetailsService {
+@Service
+public class UsuariosService {
 
     @Autowired
     private UsuariosRepository usuariosRepository;
 
-    @Override
-    public List<Usuarios> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    @Autowired
+    private GerenciaRepository gerenciaRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    public boolean emailExiste(String email) {
+        return usuariosRepository.existsByEmail(email);
     }
 
-    @Override
-    public Usuarios findById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    public Usuarios cadastrarUsuario(UsuarioCadastroDTO dto, Role role) throws IllegalArgumentException {
+        Gerencia gerencia = gerenciaRepository.findById(dto.getGerenciaId()).orElse(null);
+        if (gerencia == null) {
+            throw new IllegalArgumentException("Gerência não encontrada");
+        }
+
+        Usuarios usuario = new Usuarios();
+        usuario.setNome(dto.getNome());
+        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        usuario.setEmail(dto.getEmail());
+        usuario.setCargo(dto.getCargo());
+        usuario.setFormacao(dto.getFormacao());
+        usuario.setGerencia(gerencia);
+        usuario.setRoles(Set.of(role));
+
+        return usuariosRepository.save(usuario);
     }
 
-    @Override
-    public Usuarios save(Usuarios t) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    public List<Usuarios> listarTodos() {
+        return usuariosRepository.findAll();
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return usuariosRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+    public Optional<Usuarios> buscarPorEmail(String email) {
+        return usuariosRepository.findByEmail(email);
+    }
+
+    public void deletarPorEmail(String email) {
+        usuariosRepository.findByEmail(email).ifPresent(usuariosRepository::delete);
     }
 
 }

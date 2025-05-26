@@ -60,6 +60,12 @@ public class GerenciaService {
     public void delete(Long id) {
         Gerencia existente = findById(id);
         gerenciaRepository.delete(existente);
+        return gerenciaRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Gerencia save(Gerencia t) {
+        return gerenciaRepository.save(t);
     }
 
 }

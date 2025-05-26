@@ -1,27 +1,36 @@
 package semtd_intranet.semtd_net.DTO;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import semtd_intranet.semtd_net.enums.Cargo;
-import semtd_intranet.semtd_net.model.Usuarios;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioCadastroDTO {
 
-        private Long id;
-        private String nome;
-        private String email;
-        private Cargo cargo;
+    @NotBlank
+    @Size(min = 2, max = 100)
+    private String nome;
 
-        public UsuarioCadastroDTO(Usuarios usuario) {
-            this.id = usuario.getId();
-            this.nome = usuario.getNome();
-            this.email = usuario.getEmail();
-            this.cargo = usuario.getCargo();
-        }
+    @NotBlank
+    @Size(min = 6)
+    private String senha;
+
+    @NotBlank
+    @Email
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
+    private String email;
+
+    @NotNull
+    private Cargo cargo;
+
+    @NotBlank
+    private String formacao;
+
+    @NotNull
+    private Long gerenciaId;
+
+
 }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import semtd_intranet.semtd_net.DTO.ArquivosDTO;
+
 import semtd_intranet.semtd_net.model.Arquivos;
 import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.ArquivosRepository;
@@ -18,13 +18,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.io.File;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ArquivosService {
@@ -45,11 +41,7 @@ public class ArquivosService {
             return ResponseEntity.notFound().build();
         }
 
-        try {
-            return retornarArquivo(foto);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao acessar a imagem.");
-        }
+        return retornarArquivo(foto);
     }
 
     public ResponseEntity<?> salvarOuAtualizarFotoDoUsuarioLogado(MultipartFile file) {
@@ -89,18 +81,12 @@ public class ArquivosService {
         return ResponseEntity.noContent().build();
     }
 
-    private ResponseEntity<?> retornarArquivo(Arquivos arquivo) throws IOException {
-        Path filePath = Paths.get(storagePath, arquivo.getNomeArquivo());
-        if (!Files.exists(filePath)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        byte[] dados = Files.readAllBytes(filePath);
-        ByteArrayResource resource = new ByteArrayResource(dados);
+    private ResponseEntity<?> retornarArquivo(Arquivos arquivo) {
+        ByteArrayResource resource = new ByteArrayResource(arquivo.getDados());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + arquivo.getNomeArquivo() + "\"")
-                .contentLength(dados.length)
+                .contentLength(arquivo.getDados().length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
@@ -115,13 +101,11 @@ public class ArquivosService {
         String nomeOriginal = file.getOriginalFilename();
         byte[] dados = file.getBytes();
 
-        Path filePath = Paths.get(storagePath, nomeOriginal);
-        Files.write(filePath, dados);
-
         Arquivos arquivo = new Arquivos();
         arquivo.setNomeArquivo(nomeOriginal);
+        arquivo.setDados(dados);
 
-        // Salva no banco de dados
         return arquivosRepository.save(arquivo);
     }
+
 }
