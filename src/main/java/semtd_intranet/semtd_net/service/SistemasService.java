@@ -4,6 +4,7 @@ import semtd_intranet.semtd_net.model.Sistemas;
 import semtd_intranet.semtd_net.repository.SistemasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,10 +34,12 @@ public class SistemasService {
         return repository.findByNome(nome);
     }
 
+    @Transactional
     public void deletarPorId(Long id) {
         repository.deleteById(id);
     }
 
+    @Transactional
     public void deletarPorNome(String nome) {
         repository.deleteByNome(nome);
     }

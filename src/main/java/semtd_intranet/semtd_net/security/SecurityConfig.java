@@ -56,9 +56,11 @@ public class SecurityConfig {
                         .requestMatchers("/usuarios/listar").hasRole("ADMIN")
                         .requestMatchers("/usuarios/delete").hasRole("ADMIN")
 
-                        .requestMatchers("/diretrizes/**", "/sistemas/**").authenticated() // Apenas exige login,
-                                                                                           // permissões controladas por
-                                                                                           // @PreAuthorize
+                        .requestMatchers("/diretrizes/**", "/sistemas/**",
+                                "/cards-evento/**")
+                        .authenticated() // Apenas exige login,
+                                         // permissões controladas por
+                                         // @PreAuthorize
                         .anyRequest()
                         .authenticated()) // Torna todas as outras rotas protegidas
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

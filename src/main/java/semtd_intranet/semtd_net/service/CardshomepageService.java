@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import semtd_intranet.semtd_net.model.Cardshomepage;
 import semtd_intranet.semtd_net.repository.CardshomepageRepository;
@@ -41,6 +42,7 @@ public class CardshomepageService {
         return cardshomepageRepository.findByTituloContainingIgnoreCase(titulo);
     }
 
+    @Transactional
     public void deleteById(Long id) {
         cardshomepageRepository.deleteById(id);
     }
@@ -49,6 +51,7 @@ public class CardshomepageService {
         return cardshomepageRepository.existsById(id);
     }
 
+    @Transactional
     public void deleteAllByTituloContainingIgnoreCase(String titulo) {
         List<Cardshomepage> cards = cardshomepageRepository.findByTituloContainingIgnoreCase(titulo);
         cardshomepageRepository.deleteAll(cards);
