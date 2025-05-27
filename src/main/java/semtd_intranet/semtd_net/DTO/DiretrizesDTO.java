@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import semtd_intranet.semtd_net.enums.IconeDiretriz;
 
 @Getter
 @Setter
@@ -23,5 +24,8 @@ public class DiretrizesDTO {
     @NotEmpty(message = "A descrição não pode estar vazia")
     @Size(min = 5, max = 255, message = "A descrição deve ter entre 5 e 255 caracteres")
     private String descricao;
+
+    @NotNull(message = "O ícone é obrigatório")
+    private IconeDiretriz icone;
 
 }

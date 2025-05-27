@@ -46,6 +46,7 @@ public class UsuariosService {
         usuario.setFormacao(dto.getFormacao());
         usuario.setGerencia(gerencia);
         usuario.setRoles(Set.of(role));
+        usuario.setRealUsername(dto.getRealUsername());
 
         return usuariosRepository.save(usuario);
     }

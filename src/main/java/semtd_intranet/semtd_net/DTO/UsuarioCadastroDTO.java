@@ -33,4 +33,8 @@ public class UsuarioCadastroDTO {
     @NotNull
     private Long gerenciaId;
 
+    @NotBlank
+    @Size(min = 3, max = 50)
+    private String realUsername;
+
 }

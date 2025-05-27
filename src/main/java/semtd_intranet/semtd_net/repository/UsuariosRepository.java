@@ -21,4 +21,8 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long> {
 
     List<Usuarios> findByGerenciaNomeIgnoreCaseContaining(String nome);
 
+    Optional<Usuarios> findByRealUsername(String realUsername);
+
+    boolean existsByRealUsername(String realUsername);
+
 }

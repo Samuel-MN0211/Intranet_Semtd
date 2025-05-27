@@ -54,6 +54,11 @@ public class Usuarios implements UserDetails {
     @OneToMany(mappedBy = "criadoPor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comunicados> comunicadosCriados;
 
+    @NotBlank
+    @Column(unique = true)
+    @Size(min = 3, max = 100)
+    private String realUsername;
+
     @OneToOne(optional = true)
     @JoinColumn(name = "foto_id")
     private Arquivos fotoUsuario;

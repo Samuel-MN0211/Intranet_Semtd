@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import semtd_intranet.semtd_net.DTO.AuthRequestDTO;
 import semtd_intranet.semtd_net.DTO.AuthResponseDTO;
+import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.security.JwtUtil;
 import semtd_intranet.semtd_net.service.UsuariosDetailsService;
 
@@ -50,6 +51,10 @@ public class AuthController {
         final UserDetails userDetails = usuariosDetailsService.loadUserByUsername(request.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponseDTO(jwt));
+        // Recuperar o usuário do banco para extrair nome real e email
+        Usuarios usuario = (Usuarios) userDetails;
+
+        return ResponseEntity.ok(
+                new AuthResponseDTO(jwt, usuario.getRealUsername(), usuario.getEmail()));
     }
 }

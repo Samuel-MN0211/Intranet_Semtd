@@ -19,6 +19,7 @@ public class CardsDeEventoService {
 
     private CardsDeEventoDTO toDTO(CardsDeEvento entity) {
         return new CardsDeEventoDTO(
+                entity.getId(),
                 entity.getTitulo(),
                 entity.getData(),
                 entity.getHorarioInicio(),

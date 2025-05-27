@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import semtd_intranet.semtd_net.enums.IconeDiretriz;
+
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,5 +39,9 @@ public class Diretrizes {
     @CreationTimestamp
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private IconeDiretriz icone;
 
 }

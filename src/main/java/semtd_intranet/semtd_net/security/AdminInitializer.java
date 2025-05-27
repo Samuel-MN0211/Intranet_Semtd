@@ -49,6 +49,7 @@ public class AdminInitializer implements CommandLineRunner {
             admin.setGerencia(gerenciaAdmin);
             admin.setCargo(Cargo.DIRETOR); // ou qualquer outro valor do enum
             admin.setFormacao("Administração Pública");
+            admin.setRealUsername("Samuel M");
 
             usuariosRepository.save(admin);
             System.out.println("Admin criado com sucesso. Roles: " + admin.getRoles());
@@ -62,6 +63,7 @@ public class AdminInitializer implements CommandLineRunner {
             usuario.setGerencia(gerenciaAdmin);
             usuario.setCargo(Cargo.ANALISTA_ADMINISTRATIVO); // ou outro valor válido do enum
             usuario.setFormacao("Engenharia de Transportes");
+            usuario.setRealUsername("Ramon C.");
 
             usuariosRepository.save(usuario);
             System.out.println("Usuario Padrão criado com sucesso. Roles: " + usuario.getRoles());

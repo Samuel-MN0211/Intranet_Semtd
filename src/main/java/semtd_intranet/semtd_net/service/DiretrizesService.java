@@ -21,6 +21,7 @@ public class DiretrizesService {
         Diretrizes d = new Diretrizes();
         d.setTitulo(dto.getTitulo());
         d.setDescricao(dto.getDescricao());
+        d.setIcone(dto.getIcone());
         return d;
     }
 
@@ -29,6 +30,7 @@ public class DiretrizesService {
         dto.setId(diretriz.getId());
         dto.setTitulo(diretriz.getTitulo());
         dto.setDescricao(diretriz.getDescricao());
+        dto.setIcone(diretriz.getIcone());
         return dto;
     }
 
@@ -48,6 +50,8 @@ public class DiretrizesService {
         Diretrizes d = opt.get();
         d.setTitulo(dto.getTitulo());
         d.setDescricao(dto.getDescricao());
+        d.setIcone(dto.getIcone());
+
         return toDTO(diretrizesRepository.save(d));
     }
 
@@ -59,6 +63,8 @@ public class DiretrizesService {
         Diretrizes d = opt.get();
         d.setTitulo(dto.getTitulo());
         d.setDescricao(dto.getDescricao());
+        d.setIcone(dto.getIcone());
+
         return toDTO(diretrizesRepository.save(d));
     }
 

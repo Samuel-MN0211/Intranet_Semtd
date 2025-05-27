@@ -44,4 +44,7 @@ public class Gerencia {
     @OneToMany(mappedBy = "gerencia")
     private List<Usuarios> usuarios;
 
+    @OneToMany(mappedBy = "gerencia", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Projeto> projetos;
+
 }
