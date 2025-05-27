@@ -23,6 +23,7 @@ public class Gerencia {
 
     @NotEmpty(message = "O nome da gerência não pode estar vazio")
     @Size(min = 2, max = 100, message = "O nome da gerência deve ter entre 2 e 100 caracteres")
+    @Column(unique = true)
     private String nome;
 
     @NotEmpty(message = "A sigla da gerência não pode estar vazia")

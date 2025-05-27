@@ -23,6 +23,7 @@ public class Projeto {
 
     @NotBlank
     @Size(min = 2, max = 100)
+    @Column(unique = true)
     private String nome;
 
     @Column(name = "o_que_e")

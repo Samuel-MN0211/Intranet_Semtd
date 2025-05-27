@@ -59,7 +59,7 @@ public class Usuarios implements UserDetails {
     @Size(min = 3, max = 100)
     private String realUsername;
 
-    @OneToOne(optional = true)
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "foto_id")
     private Arquivos fotoUsuario;
 

@@ -24,58 +24,62 @@ import semtd_intranet.semtd_net.service.UsuariosDetailsService;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter;
+        @Autowired
+        private JwtAuthFilter jwtAuthFilter;
 
-    @Autowired
-    private UsuariosDetailsService usuariosDetailsService;
+        @Autowired
+        private UsuariosDetailsService usuariosDetailsService;
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() { // Criptografa senhas dos usuários.
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public BCryptPasswordEncoder passwordEncoder() { // Criptografa senhas dos usuários.
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
-                .csrf(AbstractHttpConfigurer::disable)
-                .requestCache(RequestCacheConfigurer::disable)
-                // Desativa csrf expondo o endpoint de criação de admin para que possa
-                // ser acessado sem estar logado
-                // TODO: REVER ROTA DE ADMIN EXPOSTA APÓS TESTE E VALIDAÇÃO
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login")
-                        .permitAll()
-                        .requestMatchers("/usuarios/cadastraradmin").hasRole("ADMIN") // Porque estão sendo listadas
-                                                                                      // individualmente? Por algum
-                                                                                      // motivo as requisições
-                                                                                      // espontaneamente não ativam o
-                                                                                      // filtro caso agrupadas (??)
-                        .requestMatchers("/usuarios/cadastrarusuario").hasRole("ADMIN")
-                        .requestMatchers("/usuarios/listar").hasRole("ADMIN")
-                        .requestMatchers("/usuarios/delete").hasRole("ADMIN")
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                return http.csrf(csrf -> csrf.disable())
+                                .cors(cors -> cors.disable())
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .requestCache(RequestCacheConfigurer::disable)
+                                // Desativa csrf expondo o endpoint de criação de admin para que possa
+                                // ser acessado sem estar logado
+                                // TODO: REVER ROTA DE ADMIN EXPOSTA APÓS TESTE E VALIDAÇÃO
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/auth/login")
+                                                .permitAll()
+                                                .requestMatchers("/usuarios/cadastraradmin").hasRole("ADMIN")
+                                                // ler javadoc: ao agrupar dentro de requestmatchers com hasRole,
+                                                // por algum motivo nao funciona.
 
-                        .requestMatchers("/diretrizes/**", "/sistemas/**",
-                                "/cards-evento/**", "/gerencia/**")
-                        .authenticated() // Apenas exige login,
-                                         // permissões controladas por
-                                         // @PreAuthorize
-                        .anyRequest()
-                        .authenticated()) // Torna as rotas protegidas.
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+                                                .requestMatchers("/usuarios/cadastrarusuario").hasRole("ADMIN")
+                                                .requestMatchers("/usuarios/listar").hasRole("ADMIN")
+                                                .requestMatchers("/usuarios/delete").hasRole("ADMIN")
 
-    // BEAN PARA INICIALIZAR O AUTENTICADOR
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder encoder)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(usuariosDetailsService)
-                .passwordEncoder(encoder)
-                .and()
-                .build();
-    }
+                                                .requestMatchers("/diretrizes/**", "/sistemas/**",
+                                                                "/cards-evento/**", "/gerencia/**",
+                                                                "/cards-evento/**", "/arquivos/**",
+                                                                "/projetos/**", "/usuarios/por-gerencia/{idGerencia}",
+                                                                "/usuarios/por-nome-gerencia",
+                                                                "/comunicados/**")
+                                                .authenticated() // Apenas exige login,
+                                                                 // permissões controladas por
+                                                                 // @PreAuthorize
+                                                .anyRequest()
+                                                .authenticated()) // Torna as rotas protegidas.
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                                .build();
+        }
+
+        // BEAN PARA INICIALIZAR O AUTENTICADOR
+        @Bean
+        public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder encoder)
+                        throws Exception {
+                return http.getSharedObject(AuthenticationManagerBuilder.class)
+                                .userDetailsService(usuariosDetailsService)
+                                .passwordEncoder(encoder)
+                                .and()
+                                .build();
+        }
 }

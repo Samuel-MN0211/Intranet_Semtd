@@ -3,6 +3,7 @@ package semtd_intranet.semtd_net.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import semtd_intranet.semtd_net.model.Usuarios;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -71,5 +72,14 @@ public class JwtUtil {
                 .getBody()
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+    public String getEmailFromRequest(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        String token = header != null && header.startsWith("Bearer ") ? header.substring(7) : null;
+        if (token == null)
+            return null;
+        Claims claims = Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
+        return claims.getSubject();
     }
 }

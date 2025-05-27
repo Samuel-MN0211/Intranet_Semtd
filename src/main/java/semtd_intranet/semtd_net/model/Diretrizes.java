@@ -27,7 +27,7 @@ public class Diretrizes {
     @NotNull(message = "O título é obrigatório")
     @NotEmpty(message = "O título não pode estar vazio")
     @Size(min = 2, max = 100, message = "O título deve ter entre 2 e 100 caracteres")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String titulo;
 
     @NotNull(message = "A descrição é obrigatória")

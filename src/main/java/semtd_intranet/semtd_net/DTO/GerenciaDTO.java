@@ -12,7 +12,7 @@ import semtd_intranet.semtd_net.enums.TipoGerencia;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class GerenciaDTO {
 
     private Long id;
@@ -36,7 +36,7 @@ public class GerenciaDTO {
     @NotNull
     private TipoGerencia tipoGerencia;
 
-    // Não possui usuários associados no DTO, para visualizar usuarios por gerencia,
+    // Não possui usuários associados no DTO. Para visualizar usuarios por gerencia,
     // verificar endpoint de listagem em usuariosController
 
 }

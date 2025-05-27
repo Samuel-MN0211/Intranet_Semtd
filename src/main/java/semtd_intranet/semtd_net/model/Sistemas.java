@@ -22,7 +22,8 @@ public class Sistemas {
     @NotNull(message = "O nome é obrigatório")
     @NotEmpty(message = "O nome não pode estar vazio")
     @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres")
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
+
     private String nome;
 
     @NotNull(message = "A descrição é obrigatória")
