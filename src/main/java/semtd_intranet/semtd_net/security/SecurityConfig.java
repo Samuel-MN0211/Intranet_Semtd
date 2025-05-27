@@ -57,7 +57,7 @@ public class SecurityConfig {
 
                                                 .requestMatchers("/diretrizes/**", "/sistemas/**",
                                                                 "/cards-evento/**", "/gerencia/**",
-                                                                "/cards-evento/**", "/arquivos/**",
+                                                                "/arquivos/**",
                                                                 "/projetos/**", "/usuarios/por-gerencia/{idGerencia}",
                                                                 "/usuarios/por-nome-gerencia",
                                                                 "/comunicados/**")
