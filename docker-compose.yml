@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_semtd
+    restart: always
+    environment:
+      POSTGRES_DB: semtd_db
+      POSTGRES_USER: semtd_user
+      POSTGRES_PASSWORD: semtd_pass
+    ports:
+      - "5432:5432"
+    networks:
+      - semtd_net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: semtd_app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/semtd_db
+      SPRING_DATASOURCE_USERNAME: semtd_user
+      SPRING_DATASOURCE_PASSWORD: semtd_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+    ports:
+      - "8080:8080"
+    networks:
+      - semtd_net
+
+volumes:
+  postgres_data:
+
+networks:
+  semtd_net:
