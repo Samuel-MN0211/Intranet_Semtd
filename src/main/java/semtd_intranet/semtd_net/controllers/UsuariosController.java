@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
+import semtd_intranet.semtd_net.DTO.UsuarioRespostaDTO;
 import semtd_intranet.semtd_net.enums.Role;
 import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.service.UsuariosService;
@@ -52,11 +53,15 @@ public class UsuariosController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<?> listarUsuarios() {
-        var usuarios = usuariosService.listarTodos().stream().map(u -> {
-            String tipo = u.getRoles().contains(Role.ADMIN) ? "ADMIN" : "USUARIO";
-            return String.format("Nome: %s | Email: %s | Tipo: %s", u.getNome(), u.getEmail(), tipo);
-        }).collect(Collectors.toList());
+    public ResponseEntity<List<UsuarioRespostaDTO>> listarUsuarios() {
+        List<UsuarioRespostaDTO> usuarios = usuariosService.listarTodos().stream()
+                .map(u -> new UsuarioRespostaDTO(
+                        u.getId(),
+                        u.getNome(),
+                        u.getEmail(),
+                        u.getRoles().contains(Role.ADMIN) ? "ADMIN" : "USUARIO",
+                        u.getRealUsername()))
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(usuarios);
     }
