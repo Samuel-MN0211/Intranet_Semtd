@@ -55,6 +55,6 @@ public class AuthController {
         Usuarios usuario = (Usuarios) userDetails;
 
         return ResponseEntity.ok(
-                new AuthResponseDTO(jwt, usuario.getRealUsername(), usuario.getEmail()));
+                new AuthResponseDTO(jwt, usuario.getRealUsername(), usuario.getEmail(), usuario.getRoles()));
     }
 }

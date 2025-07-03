@@ -38,7 +38,8 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 return http.csrf(csrf -> csrf.disable())
-                                .cors(cors -> cors.disable())
+                                .cors(cors -> {
+                                })
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .requestCache(RequestCacheConfigurer::disable)
                                 // Desativa csrf expondo o endpoint de criação de admin para que possa
