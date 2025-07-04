@@ -32,14 +32,16 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
+        Usuarios usuario = (Usuarios) userDetails; // Cast explícito
+
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
-                .claim("realUsername", userDetails.getUsername())
-                .claim("roles", userDetails.getAuthorities().stream()
+                .setSubject(usuario.getEmail())
+                .claim("realUsername", usuario.getRealUsername())
+                .claim("roles", usuario.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .toList())
                 .setIssuedAt(new Date())
-                .setId(String.valueOf(((Usuarios) userDetails).getId()))
+                .setId(String.valueOf(usuario.getId()))
                 .setIssuer("semtd.net")
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMillis))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -54,6 +56,16 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public String extractRealUsername(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("realUsername", String.class);
     }
 
     public boolean validateToken(String token, UserDetails userDetails) { // Compara username (email)e verifica se o
