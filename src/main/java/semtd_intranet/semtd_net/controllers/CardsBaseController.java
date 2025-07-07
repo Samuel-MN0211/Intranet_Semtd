@@ -6,28 +6,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import semtd_intranet.semtd_net.DTO.SistemasDTO;
+import semtd_intranet.semtd_net.DTO.CardsBaseDTO;
 
-import semtd_intranet.semtd_net.service.SistemasService;
+import semtd_intranet.semtd_net.service.CardsBaseService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/sistemas")
-public class SistemasController {
+@RequestMapping("/cards")
+public class CardsBaseController {
 
     @Autowired
-    private SistemasService service;
+    private CardsBaseService service;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/cadastrar")
-    public ResponseEntity<SistemasDTO> criarSistema(@Valid @RequestBody SistemasDTO dto) {
+    public ResponseEntity<CardsBaseDTO> criarCard(@Valid @RequestBody CardsBaseDTO dto) {
         return ResponseEntity.ok(service.salvar(dto));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     @GetMapping("/listar")
-    public ResponseEntity<List<SistemasDTO>> listarTodos() {
+    public ResponseEntity<List<CardsBaseDTO>> listarTodos() {
         return ResponseEntity.ok(service.listarTodos());
     }
 
@@ -41,7 +41,7 @@ public class SistemasController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizarPorId(@PathVariable Long id, @Valid @RequestBody SistemasDTO dto) {
+    public ResponseEntity<?> atualizarPorId(@PathVariable Long id, @Valid @RequestBody CardsBaseDTO dto) {
         try {
             return ResponseEntity.ok(service.atualizarPorId(id, dto));
         } catch (RuntimeException e) {
@@ -55,7 +55,7 @@ public class SistemasController {
         if (!service.existePorId(id))
             return ResponseEntity.notFound().build();
         service.deletarPorId(id);
-        return ResponseEntity.ok("Sistema deletado com sucesso.");
+        return ResponseEntity.ok("Card deletado com sucesso.");
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
@@ -68,7 +68,7 @@ public class SistemasController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/atualizar")
-    public ResponseEntity<?> atualizarPorNome(@RequestParam String nome, @Valid @RequestBody SistemasDTO dto) {
+    public ResponseEntity<?> atualizarPorNome(@RequestParam String nome, @Valid @RequestBody CardsBaseDTO dto) {
         try {
             return ResponseEntity.ok(service.atualizarPorNome(nome, dto));
         } catch (RuntimeException e) {
@@ -82,6 +82,6 @@ public class SistemasController {
         if (!service.existePorNome(nome))
             return ResponseEntity.notFound().build();
         service.deletarPorNome(nome);
-        return ResponseEntity.ok("Sistema deletado com sucesso.");
+        return ResponseEntity.ok("Card deletado com sucesso.");
     }
 }

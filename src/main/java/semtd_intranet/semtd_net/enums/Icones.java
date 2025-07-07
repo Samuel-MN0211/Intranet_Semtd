@@ -1,6 +1,6 @@
 package semtd_intranet.semtd_net.enums;
 
-public enum IconeDiretriz {
+public enum Icones {
     PROJECT_MANAGEMENT,
     GROUP,
     RESPONSIVE,

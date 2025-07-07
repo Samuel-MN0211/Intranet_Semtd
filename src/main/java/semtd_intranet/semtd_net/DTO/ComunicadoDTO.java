@@ -17,4 +17,6 @@ public class ComunicadoDTO {
     private String criadoPor;
     private LocalDateTime criadoEm;
     private LocalDateTime expiraEm;
+    private LocalDateTime atualizadoEm;
+
 }

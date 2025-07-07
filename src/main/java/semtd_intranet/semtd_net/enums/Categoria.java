@@ -1,0 +1,11 @@
+package semtd_intranet.semtd_net.enums;
+
+public enum Categoria {
+    PLATAFORMAS_E_SISTEMAS,
+    GESTAO_E_ESTRUTURA,
+    DOCUMENTACAO_OFICIAL,
+    INFRAESTRUTURA,
+    GUIAS_E_MATERIAIS_VISUAIS,
+    JORNADA_DE_CONHECIMENTO,
+    TRILHAS_DE_CAPACITACAO
+}

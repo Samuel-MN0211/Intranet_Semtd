@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import semtd_intranet.semtd_net.enums.IconeDiretriz;
+import semtd_intranet.semtd_net.enums.Icones;
 
 import java.time.LocalDateTime;
 
@@ -42,6 +42,6 @@ public class Diretrizes {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private IconeDiretriz icone;
+    private Icones icone;
 
 }

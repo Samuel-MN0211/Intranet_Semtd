@@ -2,13 +2,13 @@ package semtd_intranet.semtd_net.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import semtd_intranet.semtd_net.model.Sistemas;
+import semtd_intranet.semtd_net.model.CardsBase;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SistemasRepository extends JpaRepository<Sistemas, Long> {
-    Optional<Sistemas> findByNome(String nome);
+public interface CardsBaseRepository extends JpaRepository<CardsBase, Long> {
+    Optional<CardsBase> findByNome(String nome);
 
     boolean existsByNome(String nome);
 

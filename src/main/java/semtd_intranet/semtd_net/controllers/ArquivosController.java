@@ -43,7 +43,8 @@ public class ArquivosController {
         return new ArquivoDTO(arq.getId(), arq.getNomeArquivo(), "/semtd/arquivos/foto/" + arq.getId());
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')") // POST PARA ENVIAR FOTO E ASSOCIAR COM O USUÁRIO ATUALMENTE LOGADO
+                                                    // (EMAIL EXTRAIDO DO JWT DA REQUEST)
     @PostMapping("/upload-usuario")
     public ResponseEntity<?> uploadComUsuario(@RequestParam("file") MultipartFile file,
             HttpServletRequest request) throws IOException {
@@ -52,14 +53,15 @@ public class ArquivosController {
         return ResponseEntity.ok(toDTO(arquivo));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')") // POST PARA FAZER UPLOAD DE FOTO SEM ASSOCIAR A NENHUM USUÁRIO -> FOTOS DE
+                                      // EQUIPE, FOTOS GERAIS, DEVEM USAR ESSA ROTA
     @PostMapping("/upload-livre")
     public ResponseEntity<?> uploadSemUsuario(@RequestParam("file") MultipartFile file) throws IOException {
         Arquivos arquivo = arquivosService.salvarSemUsuario(file);
         return ResponseEntity.ok(toDTO(arquivo));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')") // GET PARA exibir A FOTO ATUAL DO USUÁRIO LOGADO
     @GetMapping("/minha-foto")
     public ResponseEntity<?> minhaFoto(@AuthenticationPrincipal UserDetails userDetails) {
         Optional<Usuarios> usuarioOpt = usuariosRepository.findByEmail(userDetails.getUsername());
@@ -78,7 +80,7 @@ public class ArquivosController {
         return ResponseEntity.ok(toDTO(foto));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')") // GET PARA LISTAR TODAS AS FOTOS SEM ASSOCIAÇÃO COM USUÁRIO
     @GetMapping("/sem-usuario")
     public ResponseEntity<?> listarSemUsuario() {
         List<Arquivos> lista = arquivosService.listarFotosSemUsuario();
@@ -91,7 +93,8 @@ public class ArquivosController {
         return ResponseEntity.ok(resposta);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')") // PEGA A FOTO DO GERENTE DE UMA GERÊNCIA ESPECÍFICA (ESPERA-SE QUE
+                                                    // A GERÊNCIA TENHA UM ÚNICO GERENTE ASSOCIADO)
     @GetMapping("/por-gerencia")
     public ResponseEntity<?> listarFotosGerentes(@RequestParam Long gerenciaId) {
         List<Arquivos> lista = arquivosService.listarFotosPorGerenciaComCargoGerente(gerenciaId);
@@ -105,7 +108,7 @@ public class ArquivosController {
         return ResponseEntity.ok(resposta);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')") // OBTÉM A FOTO DE USUÁRIO POR ID
     @GetMapping("/foto/{id}")
     public ResponseEntity<byte[]> obterFotoPorId(@PathVariable Long id) {
         Arquivos arquivo = arquivosRepository.findById(id).orElse(null);
@@ -129,4 +132,39 @@ public class ArquivosController {
         headers.setContentType(tipo);
         return new ResponseEntity<>(arquivo.getDados(), headers, HttpStatus.OK);
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')") // OBTÉM A FOTO DE USUÁRIO POR REALUSERNAME
+    @GetMapping("/por-realusername")
+    public ResponseEntity<?> fotoPorRealUsername(@RequestParam String realUsername) {
+        Optional<Usuarios> usuarioOpt = usuariosRepository.findByRealUsername(realUsername);
+
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Usuário com realUsername '" + realUsername + "' não encontrado.");
+        }
+
+        Usuarios usuario = usuarioOpt.get();
+        Arquivos foto = usuario.getFotoUsuario();
+
+        if (foto == null || foto.getDados() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não possui foto.");
+        }
+
+        MediaType tipo;
+        String nome = foto.getNomeArquivo().toLowerCase();
+
+        if (nome.endsWith(".png")) {
+            tipo = MediaType.IMAGE_PNG;
+        } else if (nome.endsWith(".jpg") || nome.endsWith(".jpeg")) {
+            tipo = MediaType.IMAGE_JPEG;
+        } else {
+            tipo = MediaType.APPLICATION_OCTET_STREAM;
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(tipo);
+
+        return new ResponseEntity<>(foto.getDados(), headers, HttpStatus.OK);
+    }
+
 }

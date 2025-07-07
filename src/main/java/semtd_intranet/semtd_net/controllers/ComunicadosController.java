@@ -63,25 +63,13 @@ public class ComunicadosController {
     public ResponseEntity<?> deletarPorId(@PathVariable Long id) {
         try {
             comunicadosService.deletarPorId(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Card deletado com sucesso.");
         } catch (Exception e) {
             return ResponseEntity.status(404).body("Erro ao deletar: comunicado com ID " + id + " não encontrado");
         }
     }
 
-    // ✅ DELETE POR TÍTULO EXATO
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/titulo")
-    public ResponseEntity<?> deletarPorTitulo(@RequestParam String titulo) {
-        try {
-            comunicadosService.deletarPorTitulo(titulo);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(404).body("Erro ao deletar: " + e.getMessage());
-        }
-    }
-
-    // ✅ PUT POR ID
+    // PUT POR ID
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarPorId(

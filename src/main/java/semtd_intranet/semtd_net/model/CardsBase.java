@@ -7,13 +7,15 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import semtd_intranet.semtd_net.enums.Categoria;
+import semtd_intranet.semtd_net.enums.Icones;
 
 @Entity
-@Table(name = "sistemas")
+@Table(name = "CardsBase")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Sistemas {
+public class CardsBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,5 +39,13 @@ public class Sistemas {
     @Size(max = 255, message = "O link deve ter no máximo 255 caracteres")
     @Column(nullable = false)
     private String link;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Icones icone;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Categoria categoria;
 
 }

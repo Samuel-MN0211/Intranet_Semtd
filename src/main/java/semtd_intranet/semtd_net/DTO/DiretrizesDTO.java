@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import semtd_intranet.semtd_net.enums.IconeDiretriz;
+import semtd_intranet.semtd_net.enums.Icones;
 
 @Getter
 @Setter
@@ -26,6 +26,6 @@ public class DiretrizesDTO {
     private String descricao;
 
     @NotNull(message = "O ícone é obrigatório")
-    private IconeDiretriz icone;
+    private Icones icone;
 
 }

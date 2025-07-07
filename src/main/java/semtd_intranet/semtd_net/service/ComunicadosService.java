@@ -124,8 +124,9 @@ public class ComunicadosService {
                 comunicado.getId(),
                 comunicado.getTitulo(),
                 comunicado.getConteudo(),
-                comunicado.getCriadoPor().getNome(),
+                comunicado.getCriadoPor().getRealUsername(),
                 comunicado.getCriadoEm(),
-                comunicado.getExpiraEm());
+                comunicado.getExpiraEm(),
+                comunicado.getAtualizadoEm());
     }
 }
