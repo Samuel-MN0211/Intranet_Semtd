@@ -14,8 +14,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class CardsDeEventoDTO {
 
-    private long id;
-
     @NotBlank(message = "O título é obrigatório e não pode estar em branco.")
     @Size(max = 100, message = "O título deve ter no máximo 100 caracteres.")
     private String titulo;
@@ -35,4 +33,5 @@ public class CardsDeEventoDTO {
 
     @Pattern(regexp = "^(https?://)?([\\w.-]+)\\.([a-z]{2,6})([/\\w .-]*)*/?$", message = "O link deve ser uma URL válida começando com http:// ou https://")
     private String link;
+
 }

@@ -36,4 +36,9 @@ public class CardsDeEvento {
     private String localizacao;
 
     private String link;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] fotoEvento; // JPEG ou PNG, até 10MB
+
 }

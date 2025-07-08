@@ -49,4 +49,5 @@ public class Comunicados {
     @UpdateTimestamp
     @Column(name = "atualizado_em")
     private LocalDateTime atualizadoEm;
+
 }
