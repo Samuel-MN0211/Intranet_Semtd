@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+import semtd_intranet.semtd_net.DTO.RedefinirSenhaAdminDTO;
 import semtd_intranet.semtd_net.DTO.UsuarioCadastroDTO;
 import semtd_intranet.semtd_net.DTO.UsuarioRespostaDTO;
 import semtd_intranet.semtd_net.enums.Role;
@@ -81,7 +82,7 @@ public class UsuariosController {
     }
 
     // Listar usuarios por nome de gerência
-    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+
     @GetMapping("/por-nome-gerencia")
     public ResponseEntity<List<String>> listarUsuariosPorNomeGerencia(@RequestParam String nome) {
         List<Usuarios> usuarios = usuariosService.listarPorNomeGerencia(nome);
@@ -103,5 +104,15 @@ public class UsuariosController {
 
         usuariosService.deletarPorEmail(email);
         return ResponseEntity.ok("Usuário deletado com sucesso");
+    }
+
+    @PutMapping("/redefinir-senha")
+    public ResponseEntity<?> redefinirSenha(@RequestBody @Valid RedefinirSenhaAdminDTO dto) {
+        try {
+            usuariosService.redefinirSenhaPorId(dto.getUsuarioId(), dto.getNovaSenha());
+            return ResponseEntity.ok("Senha redefinida com sucesso");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

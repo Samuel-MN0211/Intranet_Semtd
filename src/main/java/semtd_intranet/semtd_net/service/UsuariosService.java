@@ -71,4 +71,12 @@ public class UsuariosService {
         return usuariosRepository.findByGerenciaNomeIgnoreCaseContaining(nome);
     }
 
+    public void redefinirSenhaPorId(Long id, String novaSenha) {
+        Usuarios usuario = usuariosRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        usuariosRepository.save(usuario);
+    }
+
 }
