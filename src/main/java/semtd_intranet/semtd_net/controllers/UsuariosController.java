@@ -61,10 +61,32 @@ public class UsuariosController {
                         u.getNome(),
                         u.getEmail(),
                         u.getRoles().contains(Role.ADMIN) ? "ADMIN" : "USUARIO",
-                        u.getRealUsername()))
+                        u.getRealUsername(),
+                        u.getDataDeNascimento(),
+                        u.getGerencia() != null ? u.getGerencia().getNome() : null))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarUsuarioPorId(@PathVariable Long id) {
+        var usuarioOpt = usuariosService.buscarPorId(id);
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+
+        Usuarios u = usuarioOpt.get();
+        UsuarioRespostaDTO dto = new UsuarioRespostaDTO(
+                u.getId(),
+                u.getNome(),
+                u.getEmail(),
+                u.getRoles().contains(Role.ADMIN) ? "ADMIN" : "USUARIO",
+                u.getRealUsername(),
+                u.getDataDeNascimento(),
+                u.getGerencia() != null ? u.getGerencia().getNome() : null);
+
+        return ResponseEntity.ok(dto);
     }
 
     // Listar Usuários por ID de gerência

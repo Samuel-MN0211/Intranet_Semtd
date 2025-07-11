@@ -1,5 +1,6 @@
 package semtd_intranet.semtd_net.model;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,10 @@ public class Usuarios implements UserDetails {
 
     @OneToMany(mappedBy = "criadoPor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comunicados> comunicadosCriados;
+
+    @Column(name = "data_nascimento")
+    @NotNull
+    private LocalDate dataDeNascimento;
 
     @NotBlank
     @Column(unique = true)

@@ -31,11 +31,11 @@ public class Gerencia {
     private String sigla;
 
     @NotEmpty(message = "A descrição não pode estar vazia")
-    @Size(min = 2, max = 500, message = "A descrição deve ter entre 2 e 500 caracteres")
+    @Size(min = 2, max = 2000, message = "A descrição deve ter entre 2 e 500 caracteres")
     private String descricao;
 
     @NotEmpty(message = "Os objetivos não podem estar vazios")
-    @Size(min = 2, max = 500, message = "Os objetivos devem ter entre 2 e 500 caracteres")
+    @Size(min = 2, max = 4000, message = "Os objetivos devem ter entre 2 e 500 caracteres")
     private String objetivos;
 
     @Enumerated(EnumType.STRING)

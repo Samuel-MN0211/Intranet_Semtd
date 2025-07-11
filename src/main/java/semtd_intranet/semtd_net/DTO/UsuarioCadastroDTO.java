@@ -1,5 +1,7 @@
 package semtd_intranet.semtd_net.DTO;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,5 +38,8 @@ public class UsuarioCadastroDTO {
     @NotBlank
     @Size(min = 3, max = 50)
     private String realUsername;
+
+    @NotNull
+    private LocalDate dataDeNascimento;
 
 }

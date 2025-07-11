@@ -1,5 +1,7 @@
 package semtd_intranet.semtd_net.DTO;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +15,6 @@ public class UsuarioRespostaDTO {
     private String email;
     private String tipo;
     private String realUsername;
+    private LocalDate dataDeNascimento;
+    private String gerencia;
 }

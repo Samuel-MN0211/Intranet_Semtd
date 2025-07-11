@@ -47,6 +47,7 @@ public class UsuariosService {
         usuario.setGerencia(gerencia);
         usuario.setRoles(Set.of(role));
         usuario.setRealUsername(dto.getRealUsername());
+        usuario.setDataDeNascimento(dto.getDataDeNascimento());
 
         return usuariosRepository.save(usuario);
     }
@@ -77,6 +78,10 @@ public class UsuariosService {
 
         usuario.setSenha(passwordEncoder.encode(novaSenha));
         usuariosRepository.save(usuario);
+    }
+
+    public Optional<Usuarios> buscarPorId(Long id) {
+        return usuariosRepository.findById(id);
     }
 
 }

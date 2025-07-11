@@ -1,5 +1,6 @@
 package semtd_intranet.semtd_net.security;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import semtd_intranet.semtd_net.enums.Cargo;
 import semtd_intranet.semtd_net.enums.Role;
-import semtd_intranet.semtd_net.enums.TipoGerencia;
 import semtd_intranet.semtd_net.model.Gerencia;
 import semtd_intranet.semtd_net.model.Usuarios;
 import semtd_intranet.semtd_net.repository.GerenciaRepository;
@@ -30,43 +30,40 @@ public class AdminInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (usuariosRepository.findByEmail("admin@semtd.com").isEmpty()) {
+            Gerencia gerenciaPrincipal = gerenciaRepository.findById(1L)
+                    .orElseThrow(
+                            () -> new RuntimeException("Erro de inicialização: Gerência com ID 1 não encontrada! " +
+                                    "Certifique-se de que o seu arquivo data.sql está criando a gerência principal."));
 
-            // Criação da gerência (obrigatório para associar a qualquer usuário)
-            Gerencia gerenciaAdmin = new Gerencia();
-            gerenciaAdmin.setNome("Gerência do Admin");
-            gerenciaAdmin.setDescricao("Pequeno exemplo para a gerência do admin");
-            gerenciaAdmin.setSigla("GEDA");
-            gerenciaAdmin.setObjetivos("Gerência criada automaticamente para o usuário administrador.");
-            gerenciaAdmin.setTipoGerencia(TipoGerencia.EXECUTIVA);
-            gerenciaAdmin = gerenciaRepository.save(gerenciaAdmin);
-
-            // Criação do admin com todos os campos obrigatórios
             Usuarios admin = new Usuarios();
             admin.setNome("Admin");
             admin.setEmail("admin@semtd.com");
             admin.setSenha(encoder.encode("admin123"));
             admin.setRoles(Set.of(Role.ADMIN));
-            admin.setGerencia(gerenciaAdmin);
-            admin.setCargo(Cargo.DIRETOR); // ou qualquer outro valor do enum
+            admin.setGerencia(gerenciaPrincipal);
+            admin.setCargo(Cargo.DIRETOR);
             admin.setFormacao("Administração Pública");
             admin.setRealUsername("Samuel M");
+            admin.setDataDeNascimento(LocalDate.of(1990, 5, 20));
 
             usuariosRepository.save(admin);
-            System.out.println("Admin criado com sucesso. Roles: " + admin.getRoles());
+            System.out.println("Usuário 'admin' criado e associado à gerência '" + gerenciaPrincipal.getNome() + "'.");
 
-            // Criação do usuário padrão com todos os campos obrigatórios
+            // --- Criação do usuário Padrão ---
             Usuarios usuario = new Usuarios();
             usuario.setNome("Usuário Padrão");
             usuario.setEmail("usuario@semtd.com");
             usuario.setSenha(encoder.encode("usuario123"));
             usuario.setRoles(Set.of(Role.USUARIO));
-            usuario.setGerencia(gerenciaAdmin);
-            usuario.setCargo(Cargo.ANALISTA_ADMINISTRATIVO); // ou outro valor válido do enum
+            usuario.setGerencia(gerenciaPrincipal);
+            usuario.setCargo(Cargo.ANALISTA_ADMINISTRATIVO);
             usuario.setFormacao("Engenharia de Transportes");
             usuario.setRealUsername("Ramon C.");
+            usuario.setDataDeNascimento(LocalDate.of(1995, 8, 15));
 
             usuariosRepository.save(usuario);
-            System.out.println("Usuario Padrão criado com sucesso. Roles: " + usuario.getRoles());
+            System.out.println(
+                    "Usuário 'Usuário Padrão' criado e associado à gerência '" + gerenciaPrincipal.getNome() + "'.");
         }
     }
 }
