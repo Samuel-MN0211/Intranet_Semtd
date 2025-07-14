@@ -32,6 +32,11 @@ public class GerenciaService {
         return toDTO(gerencia);
     }
 
+    public List<GerenciaDTO> findGerenciasVinculadas(Long idExecutiva) {
+        List<Gerencia> vinculadas = gerenciaRepository.findByGerenciaVinculadaId(idExecutiva);
+        return vinculadas.stream().map(this::toDTO).toList();
+    }
+
     public GerenciaDTO create(GerenciaDTO dto) {
         boolean nomeJaExiste = !gerenciaRepository.findByNomeContainsIgnoreCase(dto.getNome()).isEmpty();
 

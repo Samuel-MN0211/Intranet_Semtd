@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GerenciaRepository extends JpaRepository<Gerencia, Long> {
     List<Gerencia> findByNomeContainsIgnoreCase(String nome);
+
+    List<Gerencia> findByGerenciaVinculadaId(Long id);
 }

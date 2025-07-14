@@ -10,6 +10,8 @@ import semtd_intranet.semtd_net.enums.TipoGerencia;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "gerencias")
 @Getter
@@ -47,5 +49,13 @@ public class Gerencia {
 
     @OneToMany(mappedBy = "gerencia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Projeto> projetos;
+
+    @ManyToOne
+    @JoinColumn(name = "gerencia_vinculada_id")
+    private Gerencia gerenciaVinculada;
+
+    @OneToMany(mappedBy = "gerenciaVinculada")
+    @JsonIgnore // Evita loop de serialização
+    private List<Gerencia> gerenciasVinculadas;
 
 }

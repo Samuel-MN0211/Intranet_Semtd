@@ -35,6 +35,8 @@ public class GerenciaDTO {
     @NotNull
     private TipoGerencia tipoGerencia;
 
+    private Long gerenciaVinculadaId;
+
     // Não possui usuários associados no DTO. Para visualizar usuarios por gerencia,
     // verificar endpoint de listagem em usuariosController
 

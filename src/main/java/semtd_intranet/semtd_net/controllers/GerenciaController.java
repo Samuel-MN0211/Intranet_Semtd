@@ -29,6 +29,12 @@ public class GerenciaController {
         return ResponseEntity.ok(gerenciaService.findById(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    @GetMapping("/vinculadas/{idGerenciaExecutiva}")
+    public ResponseEntity<List<GerenciaDTO>> getGerenciasVinculadas(@PathVariable Long idGerenciaExecutiva) {
+        return ResponseEntity.ok(gerenciaService.findGerenciasVinculadas(idGerenciaExecutiva));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/criar")
     public ResponseEntity<GerenciaDTO> createGerencia(@RequestBody @Valid GerenciaDTO dto) {
