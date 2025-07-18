@@ -1,5 +1,7 @@
 package semtd_intranet.semtd_net.DTO;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +13,6 @@ import semtd_intranet.semtd_net.enums.TipoGerencia;
 @Getter
 @Setter
 @NoArgsConstructor
-
 public class GerenciaDTO {
 
     private Long id;
@@ -35,9 +36,7 @@ public class GerenciaDTO {
     @NotNull
     private TipoGerencia tipoGerencia;
 
-    private Long gerenciaVinculadaId;
+    private GerenciaDTO gerenciaVinculada;
 
-    // Não possui usuários associados no DTO. Para visualizar usuarios por gerencia,
-    // verificar endpoint de listagem em usuariosController
-
+    private List<GerenciaDTO> gerenciasVinculadas;
 }

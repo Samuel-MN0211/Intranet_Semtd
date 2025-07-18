@@ -50,12 +50,16 @@ public class Gerencia {
     @OneToMany(mappedBy = "gerencia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Projeto> projetos;
 
+    @OneToMany(mappedBy = "gerenciaVinculada")
+    @JsonIgnore
+    private List<Gerencia> gerenciasVinculadas;
+
     @ManyToOne
     @JoinColumn(name = "gerencia_vinculada_id")
     private Gerencia gerenciaVinculada;
 
-    @OneToMany(mappedBy = "gerenciaVinculada")
-    @JsonIgnore // Evita loop de serialização
-    private List<Gerencia> gerenciasVinculadas;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] fotoGerencia;
 
 }
