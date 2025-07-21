@@ -16,70 +16,78 @@ import java.util.stream.Collectors;
 @Service
 public class FeriasService {
 
-    @Autowired
-    private FeriasRepository feriasRepository;
+        @Autowired
+        private FeriasRepository feriasRepository;
 
-    @Autowired
-    private UsuariosRepository usuariosRepository;
+        @Autowired
+        private UsuariosRepository usuariosRepository;
 
-    public FeriasDTO cadastrar(FeriasCadastroDTO dto, String supervisorUsername) {
-        Usuarios usuario = usuariosRepository.findById(dto.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        public FeriasDTO cadastrar(FeriasCadastroDTO dto, String supervisorUsername) {
+                Usuarios usuario = usuariosRepository.findById(dto.getUsuarioId())
+                                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Usuarios supervisor = usuariosRepository.findByRealUsername(supervisorUsername)
-                .orElseThrow(() -> new RuntimeException("Supervisor não encontrado"));
+                Usuarios supervisor = usuariosRepository.findByRealUsername(supervisorUsername)
+                                .orElseThrow(() -> new RuntimeException("Supervisor não encontrado"));
 
-        Ferias ferias = new Ferias();
-        ferias.setUsuario(usuario);
-        ferias.setSupervisor(supervisor);
-        ferias.setDataInicio(dto.getDataInicio());
-        ferias.setDataFim(dto.getDataFim());
+                Ferias ferias = new Ferias();
+                ferias.setUsuario(usuario);
+                ferias.setSupervisor(supervisor);
+                ferias.setDataInicio(dto.getDataInicio());
+                ferias.setDataFim(dto.getDataFim());
 
-        Ferias salva = feriasRepository.save(ferias);
-        return mapToDTO(salva);
-    }
+                Ferias salva = feriasRepository.save(ferias);
+                return mapToDTO(salva);
+        }
 
-    public List<FeriasDTO> listarTodos() {
-        return feriasRepository.findAll()
-                .stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
-    }
+        public List<FeriasDTO> listarTodos() {
+                return feriasRepository.findAll()
+                                .stream()
+                                .map(this::mapToDTO)
+                                .collect(Collectors.toList());
+        }
 
-    public Optional<FeriasDTO> buscarPorIdDTO(Long id) {
-        return feriasRepository.findById(id).map(this::mapToDTO);
-    }
+        public Optional<FeriasDTO> buscarPorIdDTO(Long id) {
+                return feriasRepository.findById(id).map(this::mapToDTO);
+        }
 
-    public FeriasDTO atualizar(Long id, FeriasCadastroDTO dto, String supervisorUsername) {
-        Ferias ferias = feriasRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Férias não encontrada"));
+        public FeriasDTO atualizar(Long id, FeriasCadastroDTO dto, String supervisorUsername) {
+                Ferias ferias = feriasRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Férias não encontrada"));
 
-        Usuarios usuario = usuariosRepository.findById(dto.getUsuarioId())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                Usuarios usuario = usuariosRepository.findById(dto.getUsuarioId())
+                                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-        Usuarios supervisor = usuariosRepository.findByRealUsername(supervisorUsername)
-                .orElseThrow(() -> new RuntimeException("Supervisor não encontrado"));
+                Usuarios supervisor = usuariosRepository.findByRealUsername(supervisorUsername)
+                                .orElseThrow(() -> new RuntimeException("Supervisor não encontrado"));
 
-        ferias.setUsuario(usuario);
-        ferias.setSupervisor(supervisor);
-        ferias.setDataInicio(dto.getDataInicio());
-        ferias.setDataFim(dto.getDataFim());
+                ferias.setUsuario(usuario);
+                ferias.setSupervisor(supervisor);
+                ferias.setDataInicio(dto.getDataInicio());
+                ferias.setDataFim(dto.getDataFim());
 
-        return mapToDTO(feriasRepository.save(ferias));
-    }
+                return mapToDTO(feriasRepository.save(ferias));
+        }
 
-    public void deletar(Long id) {
-        Ferias ferias = feriasRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Férias não encontrada"));
-        feriasRepository.delete(ferias);
-    }
+        public void deletar(Long id) {
+                Ferias ferias = feriasRepository.findById(id)
+                                .orElseThrow(() -> new RuntimeException("Férias não encontrada"));
+                feriasRepository.delete(ferias);
+        }
 
-    private FeriasDTO mapToDTO(Ferias ferias) {
-        return new FeriasDTO(
-                ferias.getId(),
-                ferias.getUsuario().getNome(),
-                ferias.getSupervisor().getRealUsername(),
-                ferias.getDataInicio(),
-                ferias.getDataFim());
-    }
+        private FeriasDTO mapToDTO(Ferias ferias) {
+                return new FeriasDTO(
+                                ferias.getId(),
+                                ferias.getUsuario().getNome(),
+                                ferias.getSupervisor().getRealUsername(),
+                                ferias.getDataInicio(),
+                                ferias.getDataFim());
+        }
+
+        public List<FeriasDTO> listarPorMesEAno(int mes, int ano) {
+                List<Ferias> ferias = feriasRepository.findByMesEAno(mes, ano);
+                return ferias.stream()
+                                .map(this::mapToDTO)
+                                .collect(Collectors.toList());
+        }
+
 }

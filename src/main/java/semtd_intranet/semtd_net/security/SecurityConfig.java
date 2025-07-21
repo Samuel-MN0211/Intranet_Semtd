@@ -56,11 +56,11 @@ public class SecurityConfig {
                                                 .requestMatchers("/usuarios/listar").hasRole("ADMIN")
                                                 .requestMatchers("/usuarios/delete").hasRole("ADMIN")
 
-                                                .requestMatchers("/diretrizes/**", "/sistemas/**",
+                                                .requestMatchers("/cards/**", "/cards-evento/**",
                                                                 "/cards-evento/**", "/gerencia/**",
                                                                 "/arquivos/**",
                                                                 "/projetos/**", "/usuarios/por-gerencia/{idGerencia}",
-                                                                "/usuarios/por-nome-gerencia",
+                                                                "/usuarios/por-nome-gerencia", "/ferias/**",
                                                                 "/comunicados/**")
                                                 .authenticated() // Apenas exige login,
                                                                  // permissões controladas por

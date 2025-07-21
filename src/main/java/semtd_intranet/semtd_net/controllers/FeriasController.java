@@ -31,9 +31,18 @@ public class FeriasController {
         return ResponseEntity.ok(feriasService.cadastrar(dto, supervisor.getRealUsername()));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     @GetMapping
     public ResponseEntity<List<FeriasDTO>> listar() {
         return ResponseEntity.ok(feriasService.listarTodos());
+    }
+
+    @GetMapping("/por-mes")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    public ResponseEntity<List<FeriasDTO>> listarPorMesEAno(
+            @RequestParam("mes") int mes,
+            @RequestParam("ano") int ano) {
+        return ResponseEntity.ok(feriasService.listarPorMesEAno(mes, ano));
     }
 
     @GetMapping("/{id}")
