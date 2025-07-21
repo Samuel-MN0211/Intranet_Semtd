@@ -15,4 +15,5 @@ public class FeriasDTO {
     private String supervisor;
     private LocalDate dataInicio;
     private LocalDate dataFim;
+    private String realUsername;
 }

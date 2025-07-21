@@ -80,7 +80,8 @@ public class FeriasService {
                                 ferias.getUsuario().getNome(),
                                 ferias.getSupervisor().getRealUsername(),
                                 ferias.getDataInicio(),
-                                ferias.getDataFim());
+                                ferias.getDataFim(),
+                                ferias.getUsuario().getRealUsername());
         }
 
         public List<FeriasDTO> listarPorMesEAno(int mes, int ano) {
