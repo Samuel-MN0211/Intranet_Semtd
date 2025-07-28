@@ -57,6 +57,13 @@ public class FeriasController {
         }
     }
 
+    @GetMapping("/buscar")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
+    public ResponseEntity<List<FeriasDTO>> buscarPorRealUsername(@RequestParam("realUsername") String realUsername) {
+        List<FeriasDTO> resultados = feriasService.buscarPorRealUsername(realUsername);
+        return ResponseEntity.ok(resultados);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(

@@ -74,6 +74,13 @@ public class FeriasService {
                 feriasRepository.delete(ferias);
         }
 
+        public List<FeriasDTO> buscarPorRealUsername(String usernameFragment) {
+                return feriasRepository.findByUsuarioRealUsernameContainingIgnoreCase(usernameFragment)
+                                .stream()
+                                .map(this::mapToDTO)
+                                .collect(Collectors.toList());
+        }
+
         private FeriasDTO mapToDTO(Ferias ferias) {
                 return new FeriasDTO(
                                 ferias.getId(),
@@ -81,7 +88,8 @@ public class FeriasService {
                                 ferias.getSupervisor().getRealUsername(),
                                 ferias.getDataInicio(),
                                 ferias.getDataFim(),
-                                ferias.getUsuario().getRealUsername());
+                                ferias.getUsuario().getRealUsername(),
+                                ferias.getUsuario().getGerencia().getNome());
         }
 
         public List<FeriasDTO> listarPorMesEAno(int mes, int ano) {

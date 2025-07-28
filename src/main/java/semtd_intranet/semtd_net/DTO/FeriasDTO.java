@@ -3,6 +3,7 @@ package semtd_intranet.semtd_net.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import semtd_intranet.semtd_net.model.Gerencia;
 
 import java.time.LocalDate;
 
@@ -16,4 +17,5 @@ public class FeriasDTO {
     private LocalDate dataInicio;
     private LocalDate dataFim;
     private String realUsername;
+    private String gerencia;
 }
