@@ -60,10 +60,9 @@ public class CardsBaseController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USUARIO')")
     @GetMapping("/buscar")
-    public ResponseEntity<?> buscarPorNome(@RequestParam String nome) {
-        return service.buscarPorNome(nome)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<List<CardsBaseDTO>> buscarPorFragmentoNome(@RequestParam String nome) {
+        List<CardsBaseDTO> resultados = service.buscarPorFragmentoNome(nome);
+        return ResponseEntity.ok(resultados);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

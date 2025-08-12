@@ -87,6 +87,13 @@ public class CardsBaseService {
         return repository.findByNome(nome).map(this::toDTO);
     }
 
+    public List<CardsBaseDTO> buscarPorFragmentoNome(String nome) {
+        return repository.findByNomeContainingIgnoreCase(nome)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     @Transactional
     public void deletarPorId(Long id) {
         repository.deleteById(id);
